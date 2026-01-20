@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, School, Shield, Loader, CheckCircle, ArrowRight, Heart, Sun, Sparkles } from 'lucide-react';
+import { Mail, Lock, School, Shield, Loader, CheckCircle, ArrowRight, Heart, Sun, Sparkles, User } from 'lucide-react';
 import NatureBackground from '../components/NatureBackground';
 
 const Register = () => {
     const [formData, setFormData] = useState({
+        name: '',
         email: '',
         password: '',
         college: '',
@@ -71,6 +72,20 @@ const Register = () => {
                                 className="space-y-10"
                             >
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-3 md:col-span-2">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] pl-4">Full Name</label>
+                                        <div className="relative group">
+                                            <User className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-morning-accent-lavender transition-colors" size={18} />
+                                            <input
+                                                type="text"
+                                                required
+                                                className="input-field pl-16 text-base"
+                                                placeholder="Your Name"
+                                                value={formData.name}
+                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
                                     <div className="space-y-3">
                                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] pl-4">Sanctuary Email</label>
                                         <div className="relative group">
@@ -185,9 +200,9 @@ const Register = () => {
                 </div>
 
                 <div className="mt-14 text-center">
-                    <Link to="/login" className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] hover:text-gray-800 transition-colors">
-                        Already have a marker? <span className="text-morning-accent-lavender ml-2 border-b border-morning-accent-lavender/20">Connect here</span>
-                    </Link>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        Already have an account? <Link to="/login" className="text-morning-accent-lavender hover:text-morning-sage transition-colors ml-1">Enter Sanctuary</Link>
+                    </p>
                 </div>
             </motion.div>
         </div>

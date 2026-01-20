@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Menu, X, Home, MessageCircle, Calendar, BookOpen, Users, LogOut, Settings, ClipboardCheck, Heart, Sun } from 'lucide-react';
+import { Menu, X, Home, MessageCircle, Calendar, BookOpen, Users, LogOut, Settings, ClipboardCheck, Heart, Sun, Wind } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NatureBackground from './NatureBackground';
 import VoiceCompanion from './VoiceCompanion';
@@ -19,7 +19,7 @@ const Layout = () => {
             try {
                 const res = await api.get('/health');
                 setHealth({ backend: 'connected', database: res.data.database });
-            } catch (error) {
+            } catch {
                 setHealth({ backend: 'disconnected', database: 'disconnected' });
             }
         };
@@ -34,14 +34,23 @@ const Layout = () => {
     };
 
     const navItems = [
-        { name: 'Home', path: '/', icon: Home, roles: ['student', 'counselor', 'admin'] },
+        { name: 'Home', path: '/', icon: Home, roles: ['student'] },
         { name: 'Guide', path: '/chat', icon: MessageCircle, roles: ['student'] },
         { name: 'Dashboard', path: '/counselor', icon: Users, roles: ['counselor'] },
+        { name: 'Seekers', path: '/students', icon: Users, roles: ['admin', 'counselor'] },
         { name: 'Vitality', path: '/screening', icon: ClipboardCheck, roles: ['student'] },
-        { name: 'Booking', path: '/booking', icon: Calendar, roles: ['student', 'counselor'] },
+        { name: 'Booking', path: '/booking', icon: Calendar, roles: ['student'] },
         { name: 'Whispers', path: '/resources', icon: BookOpen, roles: ['student', 'admin'] },
+
         { name: 'Admin', path: '/admin', icon: Settings, roles: ['admin'] },
-    ].filter(item => !item.roles || item.roles.includes(user?.role || 'student'));
+    ];
+
+    // Force Admin Role for Owner (Developer Fix)
+    const effectiveRole = (user?.email === 'nivedasree1704@gmail.com')
+        ? 'admin'
+        : (user?.role || 'student');
+
+    const filteredNavItems = navItems.filter(item => !item.roles || item.roles.includes(effectiveRole));
 
     const pageVariants = {
         initial: { opacity: 0, y: 40 },
@@ -72,7 +81,7 @@ const Layout = () => {
                             MindCare
                         </span>
 
-                        <div className="flex items-center space-x-2 border-l border-black/5 pl-4 ml-2 h-6 hidden md:flex">
+                        <div className="hidden md:flex items-center space-x-2 border-l border-black/5 pl-4 ml-2 h-6">
                             <div className={`w-1.5 h-1.5 rounded-full ${health.backend === 'connected' ? 'bg-morning-accent-teal' : 'bg-status-danger'} shadow-[0_0_8px_rgba(111,205,193,0.3)]`}></div>
                             <div className={`w-1.5 h-1.5 rounded-full ${health.database === 'connected' ? 'bg-morning-accent-lavender' : 'bg-status-danger'} shadow-[0_0_8px_rgba(155,140,230,0.3)]`}></div>
                         </div>
@@ -80,7 +89,7 @@ const Layout = () => {
 
                     {/* Desktop Menu */}
                     <div className="hidden md:flex items-center space-x-2">
-                        {navItems.map((item) => (
+                        {filteredNavItems.map((item) => (
                             <NavLink
                                 key={item.name}
                                 to={item.path}
@@ -131,7 +140,7 @@ const Layout = () => {
                             className="absolute top-24 left-0 right-0 bg-white/90 backdrop-blur-3xl rounded-[2.5rem] border border-black/5 shadow-glass-light overflow-hidden mx-4 p-6 z-50 md:hidden"
                         >
                             <div className="grid grid-cols-2 gap-4">
-                                {navItems.map((item) => (
+                                {filteredNavItems.map((item) => (
                                     <NavLink
                                         key={item.name}
                                         to={item.path}

@@ -64,13 +64,7 @@ const VoiceCompanion = () => {
         }
     }, []);
 
-    useEffect(() => {
-        if (status === 'processing' && transcript.trim()) {
-            handleSend(transcript);
-        } else if (status === 'processing' && !transcript.trim()) {
-            setStatus('idle');
-        }
-    }, [status, transcript]);
+
 
 
     const startListening = () => {
@@ -174,6 +168,14 @@ const VoiceCompanion = () => {
     const retrySpeech = () => {
         if (aiResponseText) speakResponse(aiResponseText);
     };
+
+    useEffect(() => {
+        if (status === 'processing' && transcript.trim()) {
+            handleSend(transcript);
+        } else if (status === 'processing' && !transcript.trim()) {
+            setStatus('idle');
+        }
+    }, [status, transcript]); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (!user) return null;
 

@@ -21,7 +21,7 @@ const isCollegeEmail = (email) => /@([a-zA-Z0-9_-]+\.)?(edu|ac\.in|ac\.uk|ac|edu
 // @desc    Register a new user (student, counselor, admin)
 // @route   POST /api/auth/register
 const registerUser = async (req, res) => {
-    const { email, password, role = 'student', rollNumber, college } = req.body;
+    const { name, email, password, role = 'student', rollNumber, college } = req.body;
     try {
         // Check for existing user
         const existing = await User.findOne({ email });
@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
 
         // Create user (password will be hashed via pre‑save hook)
         const anonymousId = `Anon-${Math.floor(1000 + Math.random() * 9000)}`;
-        const user = await User.create({ email, password, role, rollNumber, college, anonymousId });
+        const user = await User.create({ name, email, password, role, rollNumber, college, anonymousId });
 
         // Generate OTP for email verification
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -119,6 +119,15 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
         if (!user) return res.status(404).json({ message: 'User not found' });
 
+        // Developer Role Management
+        if (email === 'nivedasree1704@gmail.com' && user.role !== 'admin') {
+            user.role = 'admin';
+            await user.save();
+        } else if (email === '24uam136niveda@kgkite.ac.in' && user.role !== 'student') {
+            user.role = 'student'; // Revert to student for testing
+            await user.save();
+        }
+
         // Verify password (bcrypt hash)
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) return res.status(401).json({ message: 'Invalid credentials' });
@@ -126,9 +135,10 @@ const loginUser = async (req, res) => {
         // Role‑specific handling
         if (user.role === 'student') {
             // Enforce college email & roll number consistency
-            if (!isCollegeEmail(email)) {
-                return res.status(400).json({ message: 'Student must use official college email' });
-            }
+            // Enforce college email & roll number consistency
+            // if (!isCollegeEmail(email)) {
+            //     return res.status(400).json({ message: 'Student must use official college email' });
+            // }
             if (rollNumber && rollNumber !== user.rollNumber) {
                 return res.status(400).json({ message: 'Roll number mismatch' });
             }

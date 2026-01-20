@@ -17,7 +17,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import CrisisSupport from './pages/CrisisSupport';
 import Screening from './pages/Screening';
 import RoleSelection from './pages/RoleSelection';
+
 import CounselorDashboard from './pages/CounselorDashboard';
+import StudentDirectory from './pages/StudentDirectory';
+
 
 import { SoundProvider } from './context/SoundContext';
 
@@ -44,7 +47,9 @@ function App() {
                 <Route path="/forum" element={<PeerForum />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/counselor" element={<CounselorDashboard />} />
+                <Route path="/students" element={<StudentDirectory />} />
                 <Route path="/screening" element={<Screening />} />
+
               </Route>
             </Route>
 

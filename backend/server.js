@@ -60,6 +60,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/screening', screeningRoutes);
 app.use('/api/mood', moodRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/counselor', require('./routes/counselorRoutes'));
 
 app.get('/', (req, res) => {
     res.send('MindCare API is running...');

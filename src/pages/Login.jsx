@@ -29,7 +29,16 @@ const Login = () => {
                 setStep(2);
                 toast('Reflection code sent to your inbox', { icon: '☀️' });
             } else {
-                navigate('/');
+                const role = res.user?.role;
+                // Force redirect for owner (Developer Override)
+                if (email === 'nivedasree1704@gmail.com') {
+                    navigate('/admin');
+                    return;
+                }
+
+                if (role === 'admin') navigate('/admin');
+                else if (role === 'counselor') navigate('/counselor');
+                else navigate('/');
             }
         } catch (err) {
             setError(err.message || 'Login failed');
@@ -44,8 +53,18 @@ const Login = () => {
         try {
             const otpValue = otp.join('');
             if (otpValue.length !== 6) throw new Error('Complete the sequence');
-            await verifyOtp(email, otpValue);
-            navigate('/');
+            const res = await verifyOtp(email, otpValue);
+
+            const role = res.user?.role;
+            // Force redirect for owner (Developer Override)
+            if (email === 'nivedasree1704@gmail.com') {
+                navigate('/admin');
+                return;
+            }
+
+            if (role === 'admin') navigate('/admin');
+            else if (role === 'counselor') navigate('/counselor');
+            else navigate('/');
         } catch (err) {
             setError(err.message || 'Invalid sequence');
         } finally {
@@ -132,7 +151,6 @@ const Login = () => {
                                             <Fingerprint className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-morning-accent-lavender transition-colors" size={18} />
                                             <input
                                                 type="text"
-                                                required
                                                 className="input-field pl-14"
                                                 placeholder="Roll Number"
                                                 value={rollNumber}
@@ -199,9 +217,6 @@ const Login = () => {
                                     <button type="button" onClick={() => setStep(1)} className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-morning-sage transition-colors">
                                         Back to Entrance
                                     </button>
-                                    <Link to="/select-role" className="text-[8px] font-black text-morning-accent-lavender/50 uppercase tracking-[0.5em] hover:text-morning-accent-lavender">
-                                        Change Perspective
-                                    </Link>
                                 </div>
                             </motion.form>
                         )}

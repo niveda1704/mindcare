@@ -62,8 +62,8 @@ const getAppointments = async (req, res) => {
 
     try {
         const appointments = await Booking.find(filter)
-            .populate('studentId', 'email anonymousId')
-            .populate('counselorId', 'email anonymousId');
+            .populate('studentId', 'email anonymousId name')
+            .populate('counselorId', 'email anonymousId name');
         res.json({ appointments });
     } catch (err) {
         console.error(err);

@@ -13,12 +13,16 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const Home = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user?.role === 'admin') navigate('/admin');
+        else if (user?.role === 'counselor') navigate('/counselor');
+    }, [user, navigate]);
     const [selectedMood, setSelectedMood] = useState(null);
     const [moodHistory, setMoodHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    const [pendingMood, setPendingMood] = useState(null);
-    const [moodNote, setMoodNote] = useState("");
+    // Instant logging enabled
     const [quote, setQuote] = useState("");
 
     const moods = [
@@ -36,7 +40,7 @@ const Home = () => {
         // Browser policy might block this if no interaction happened yet,
         // but since user clicked Login, it should work.
         play();
-    }, []);
+    }, [play]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,22 +65,18 @@ const Home = () => {
         fetchData();
     }, []);
 
-    const handleMoodClick = (moodId) => {
-        setPendingMood(moodId);
-        setMoodNote("");
-    };
-
-    const confirmMoodLog = async () => {
-        if (submitting || !pendingMood) return;
+    const handleMoodSelect = async (moodId) => {
+        if (submitting) return;
         setSubmitting(true);
         try {
-            const moodObj = moods.find(m => m.id === pendingMood);
-            await api.post('/mood/log', { emoji: pendingMood, label: moodObj.label, note: moodNote });
-            toast.success("Reflection received. The sanctuary remembers.");
+            const moodObj = moods.find(m => m.id === moodId);
+            await api.post('/mood/log', { emoji: moodId, label: moodObj.label, note: "" });
+            toast.success("Reflection registered. The sanctuary remembers.");
+
+            // Refresh logs immediately to update graph
             const response = await api.get('/mood/logs');
             setMoodHistory(response.data);
-            setSelectedMood(pendingMood);
-            setPendingMood(null);
+            setSelectedMood(moodId);
         } catch (error) {
             console.error("Mood logging error:", error);
             const message = error.response?.data?.message || "Reflection lost in the breeze.";
@@ -207,54 +207,21 @@ const Home = () => {
                             </div>
                         </div>
 
-                        {!pendingMood ? (
-                            <div className="flex flex-wrap justify-center gap-6 md:gap-10">
-                                {moods.map((m) => (
-                                    <button
-                                        key={m.id}
-                                        onClick={() => handleMoodClick(m.id)}
-                                        className={`flex flex-col items-center group transition-all duration-1000 ${selectedMood === m.id ? 'scale-110' : 'opacity-30 hover:opacity-100 hover:scale-105'}`}
-                                    >
-                                        <div className={`w-20 h-20 rounded-[2.5rem] flex items-center justify-center shadow-glass-light border border-black/[0.02] transition-all duration-1000 ${selectedMood === m.id ? 'bg-black/5 border-morning-accent-lavender/30 ring-4 ring-morning-accent-lavender/5' : 'bg-black/[0.02] hover:bg-black/5'}`}>
-                                            <m.icon size={32} className={m.color} />
-                                        </div>
-                                        <span className={`mt-4 text-[9px] font-black uppercase tracking-[0.2em] ${selectedMood === m.id ? 'text-morning-accent-lavender' : 'text-gray-400'}`}>{m.label}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        ) : (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="max-w-md mx-auto bg-white/60 p-6 rounded-[2rem] border border-black/5 shadow-glass-light"
-                            >
-                                <div className="text-center mb-6">
-                                    <h4 className="text-sm font-bold text-gray-800 mb-1">Add a Gentle Note?</h4>
-                                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">Optional thoughts for your future self</p>
-                                </div>
-                                <textarea
-                                    className="w-full h-24 p-4 rounded-xl bg-white/50 border border-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-morning-accent-lavender/20 resize-none font-medium text-gray-600 mb-4 placeholder:text-gray-300 placeholder:italic"
-                                    placeholder="I am feeling..."
-                                    value={moodNote}
-                                    onChange={(e) => setMoodNote(e.target.value)}
-                                />
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={() => setPendingMood(null)}
-                                        className="flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-black/5 transition-colors"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        onClick={confirmMoodLog}
-                                        disabled={submitting}
-                                        className="flex-1 py-3 rounded-xl bg-morning-accent-lavender text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-morning-accent-lavender/20 hover:scale-[1.02] transition-transform flex justify-center items-center gap-2"
-                                    >
-                                        {submitting ? <Loader size={14} className="animate-spin" /> : 'Log Reflection'}
-                                    </button>
-                                </div>
-                            </motion.div>
-                        )}
+                        <div className="flex flex-wrap justify-center gap-6 md:gap-10">
+                            {moods.map((m) => (
+                                <button
+                                    key={m.id}
+                                    onClick={() => handleMoodSelect(m.id)}
+                                    disabled={submitting}
+                                    className={`flex flex-col items-center group transition-all duration-1000 ${selectedMood === m.id ? 'scale-110' : 'opacity-30 hover:opacity-100 hover:scale-105'} ${submitting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                >
+                                    <div className={`w-20 h-20 rounded-[2.5rem] flex items-center justify-center shadow-glass-light border border-black/[0.02] transition-all duration-1000 ${selectedMood === m.id ? 'bg-black/5 border-morning-accent-lavender/30 ring-4 ring-morning-accent-lavender/5' : 'bg-black/[0.02] hover:bg-black/5'}`}>
+                                        <m.icon size={32} className={m.color} />
+                                    </div>
+                                    <span className={`mt-4 text-[9px] font-black uppercase tracking-[0.2em] ${selectedMood === m.id ? 'text-morning-accent-lavender' : 'text-gray-400'}`}>{m.label}</span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Quick Actions */}

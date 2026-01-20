@@ -21,6 +21,12 @@ const notifyEmergency = async (alert, student) => {
         if (adminEmail) {
             await sendEmail(adminEmail, subject, text, html);
         }
+
+        // Notify Parent (Specific request)
+        const parentEmail = 'nithyadhandhandapani@gmail.com';
+        if (parentEmail) {
+            await sendEmail(parentEmail, subject, text, html);
+        }
     } catch (err) {
         console.error('Failed to send emergency notifications:', err);
     }

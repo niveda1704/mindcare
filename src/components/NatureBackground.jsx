@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Leaf, Wind, Sparkles } from 'lucide-react';
+import { Leaf } from 'lucide-react';
 
 const Lotus = ({ size, className }) => (
     <svg
@@ -39,20 +39,13 @@ const NatureBackground = () => {
         'text-garden-leaf'
     ];
 
-    const [elements, setElements] = useState({
-        flowers: [],
-        leaves: [],
-        particles: [],
-        petals: []
-    });
-
-    useEffect(() => {
+    const [elements] = useState(() => {
         // Generate blooming flowers around edges and sporadically
-        const newFlowers = Array.from({ length: 12 }).map((_, i) => ({
+        const flowers = Array.from({ length: 12 }).map((_, i) => ({
             id: `flower-${i}`,
             x: Math.random() * 100,
             y: Math.random() > 0.5 ? Math.random() * 25 : 75 + Math.random() * 25,
-            size: 40 + Math.random() * 50, // Slightly larger for Lotus detail
+            size: 40 + Math.random() * 50,
             color: flowerColors[Math.floor(Math.random() * flowerColors.length)],
             delay: Math.random() * 10,
             duration: 12 + Math.random() * 6,
@@ -61,7 +54,7 @@ const NatureBackground = () => {
         }));
 
         // Generate falling leaves from top
-        const newLeaves = Array.from({ length: 14 }).map((_, i) => ({
+        const leaves = Array.from({ length: 14 }).map((_, i) => ({
             id: `leaf-${i}`,
             x: Math.random() * 100,
             delay: Math.random() * 20,
@@ -73,7 +66,7 @@ const NatureBackground = () => {
         }));
 
         // Generate falling petals for extra delicacy
-        const newPetals = Array.from({ length: 18 }).map((_, i) => ({
+        const petals = Array.from({ length: 18 }).map((_, i) => ({
             id: `petal-${i}`,
             x: Math.random() * 100,
             delay: Math.random() * 15,
@@ -85,22 +78,19 @@ const NatureBackground = () => {
         }));
 
         // Generate glowing particles
-        const newParticles = Array.from({ length: 20 }).map((_, i) => ({
+        const particles = Array.from({ length: 20 }).map((_, i) => ({
             id: `particle-${i}`,
             x: Math.random() * 100,
             y: Math.random() * 100,
             size: 2 + Math.random() * 3,
             color: 'bg-morning-accent-lavender/30',
-            duration: 6 + Math.random() * 6
+            duration: 6 + Math.random() * 6,
+            driftX: (Math.random() - 0.5) * 80,
+            delay: Math.random() * 10
         }));
 
-        setElements({
-            flowers: newFlowers,
-            leaves: newLeaves,
-            particles: newParticles,
-            petals: newPetals
-        });
-    }, []);
+        return { flowers, leaves, particles, petals };
+    });
 
     return (
         <div className="fixed inset-0 pointer-events-none overflow-hidden -z-50 bg-morning-base/40">
@@ -200,12 +190,12 @@ const NatureBackground = () => {
                         opacity: [0, 0.8, 0],
                         scale: [0, 1.2, 0],
                         y: [0, -150],
-                        x: [0, (Math.random() - 0.5) * 80]
+                        x: [0, p.driftX]
                     }}
                     transition={{
                         duration: p.duration,
                         repeat: Infinity,
-                        delay: Math.random() * 10,
+                        delay: p.delay,
                         ease: "easeInOut"
                     }}
                     className={`absolute rounded-full ${p.color} blur-[1.5px] shadow-[0_0_10px_currentColor]`}

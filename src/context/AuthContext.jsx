@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { createContext, useContext, useState } from 'react';
+
 
 import api from '../api/axios';
 import toast from 'react-hot-toast';
@@ -9,38 +9,31 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(() => {
+        const stored = localStorage.getItem('mindcare_user');
+        return stored ? JSON.parse(stored) : null;
+    });
+    const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('mindcare_user'));
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        // Check local storage for persistent login (simulated)
-        const storedUser = localStorage.getItem('mindcare_user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
-    }, []);
-
-    const login = async (email, password) => {
+    const login = async (email, password, rollNumber) => {
         try {
-            const res = await api.post('/auth/login', { email, password });
+            const res = await api.post('/auth/login', { email, password, rollNumber });
 
             // Check if backend requires verification (2FA) for every login
             if (res.data.needsVerification) {
                 return { needsVerification: true };
             }
 
-            // Normal login (not reached in current 2FA flow)
-            const userData = res.data;
+            // Normal login (not reached in current 2FA flow for students, but for Admin/Counselor)
+            const userData = res.data.user;
             userData.token = res.data.token;
 
             setUser(userData);
             setIsAuthenticated(true);
             localStorage.setItem('mindcare_user', JSON.stringify(userData));
             toast.success("Welcome back!");
-            return { success: true };
+            return { success: true, user: userData };
         } catch (error) {
             // Legacy check for 401 unverified error
             if (error.response?.status === 401 && error.response?.data?.message === 'Please verify your email first') {
@@ -64,8 +57,9 @@ export const AuthProvider = ({ children }) => {
                 setUser(userData);
                 setIsAuthenticated(true);
                 localStorage.setItem('mindcare_user', JSON.stringify(userData));
+                localStorage.setItem('mindcare_user', JSON.stringify(userData));
                 toast.success("Email verified! You are now logged in.");
-                return { success: true };
+                return { success: true, user: userData };
             } else {
                 // For registration verification or if user object is not returned
                 toast.success(res.data.message || "Email verified!");
@@ -79,7 +73,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (data) => {
         try {
-            const res = await api.post('/auth/register', data);
+            await api.post('/auth/register', data);
             // Returns { message, userId, email }
             toast.success("Registration successful! Check your email for OTP.");
             return { success: true, needsVerification: true, email: data.email };

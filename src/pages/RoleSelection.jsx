@@ -1,101 +1,58 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { GraduationCap, Users, ShieldCheck, Heart, Sun } from 'lucide-react';
+import { GraduationCap, Users, ShieldCheck } from 'lucide-react';
 import NatureBackground from '../components/NatureBackground';
 
 const RoleSelection = () => {
     const navigate = useNavigate();
 
     const roles = [
-        {
-            id: 'student',
-            title: 'Seeker',
-            description: 'Access counseling, AI whispers, and wisdom resources.',
-            icon: GraduationCap,
-            color: 'bg-morning-accent-lavender/5',
-            accent: 'text-morning-accent-lavender'
-        },
-        {
-            id: 'counselor',
-            title: 'Guide',
-            description: 'Support students and manage your guidance sessions.',
-            icon: Users,
-            color: 'bg-morning-accent-teal/5',
-            accent: 'text-morning-accent-teal'
-        },
-        {
-            id: 'admin',
-            title: 'Keeper',
-            description: 'Oversee the sanctuary and manage platform balance.',
-            icon: ShieldCheck,
-            color: 'bg-black/[0.02]',
-            accent: 'text-gray-400'
-        }
+        { id: 'student', title: 'Seeker', icon: GraduationCap, desc: 'Find balance & inner peace', color: 'bg-morning-accent-lavender/20 text-morning-accent-lavender' },
+        { id: 'counselor', title: 'Guide', icon: Users, desc: 'Support & nurture growth', color: 'bg-morning-accent-teal/20 text-morning-accent-teal' },
+        { id: 'admin', title: 'Guardian', icon: ShieldCheck, desc: 'Oversee the sanctuary', color: 'bg-gray-100 text-gray-500' }
     ];
 
     return (
         <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
             <NatureBackground />
 
-            <div className="max-w-6xl w-full z-10 px-4">
+            <div className="relative z-10 w-full max-w-5xl">
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-center mb-20"
+                    transition={{ duration: 0.8 }}
+                    className="text-center mb-16"
                 >
-                    <motion.div
-                        whileHover={{ scale: 1.1, rotate: -10 }}
-                        transition={{ duration: 1 }}
-                        className="w-24 h-24 bg-white/60 border border-black/5 rounded-[3rem] flex items-center justify-center mx-auto mb-10 shadow-glass-light relative group overflow-hidden"
-                    >
-                        <div className="absolute inset-0 bg-morning-accent-lavender/5 animate-pulse" />
-                        <Sun className="text-morning-accent-lavender relative z-10" size={48} />
-                    </motion.div>
-                    <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6 tracking-tighter">
-                        Mind<span className="text-morning-accent-lavender">Care</span>
+                    <h1 className="text-4xl md:text-5xl font-bold text-gray-800 tracking-tight mb-4">
+                        Select Your <span className="text-morning-accent-lavender">Path</span>
                     </h1>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.6em] select-none">Begin your journey towards inner peace</p>
+                    <p className="text-sm font-bold text-gray-500 uppercase tracking-[0.3em]">Choose your perspective</p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    {roles.map((role, index) => (
-                        <motion.div
+                <div className="grid md:grid-cols-3 gap-8">
+                    {roles.map((role, idx) => (
+                        <motion.button
                             key={role.id}
-                            initial={{ opacity: 0, y: 40 }}
+                            initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.2, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                            transition={{ delay: idx * 0.2, duration: 0.6 }}
+                            whileHover={{ y: -10, scale: 1.02 }}
                             onClick={() => navigate(`/login/${role.id}`)}
-                            className="glass-card p-12 cursor-pointer group flex flex-col items-center text-center bg-white/40 border-black/5 hover:border-morning-accent-lavender/20 hover:bg-white/60 transition-all duration-1000 shadow-glass-light"
+                            className="glass-card p-10 flex flex-col items-center text-center group hover:bg-white/60 transition-all duration-500 bg-white/40 border-black/5 shadow-glass-light"
                         >
-                            <div className={`${role.color} w-24 h-24 rounded-[2.5rem] flex items-center justify-center mb-10 shadow-glass-light group-hover:scale-110 transition-all duration-1000 border border-black/[0.02]`}>
-                                <role.icon size={44} className={role.accent} />
+                            <div className={`w-24 h-24 rounded-full ${role.color} flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 text-3xl`}>
+                                <role.icon size={40} />
                             </div>
-                            <h3 className="text-3xl font-bold text-gray-800 mb-4 group-hover:text-morning-accent-lavender transition-colors duration-1000 tracking-tight">{role.title}</h3>
-                            <p className="text-gray-500 text-base leading-relaxed font-medium mb-10 px-4">
-                                {role.description}
-                            </p>
+                            <h3 className="text-2xl font-bold text-gray-800 mb-3">{role.title}</h3>
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">{role.desc}</p>
 
-                            <motion.div
-                                className="w-14 h-14 bg-black/5 rounded-full flex items-center justify-center shadow-glass-light border border-black/5 group-hover:bg-morning-accent-lavender group-hover:text-white group-hover:shadow-[0_0_20px_rgba(155,140,230,0.2)] transition-all duration-1000"
-                            >
-                                <span className="text-2xl">→</span>
-                            </motion.div>
-                        </motion.div>
+                            <div className="mt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] border-b border-gray-300 pb-1">Enter Now</span>
+                            </div>
+                        </motion.button>
                     ))}
                 </div>
-
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.3 }}
-                    transition={{ delay: 2 }}
-                    className="text-center mt-24"
-                >
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.8em] select-none">
-                        Always here for your well-being
-                    </p>
-                </motion.div>
             </div>
         </div>
     );

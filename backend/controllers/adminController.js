@@ -37,7 +37,7 @@ const getDashboardStats = async (req, res) => {
 
         // Emergency Alert History (Last 10 - Anonymized)
         const recentAlerts = await CrisisAlert.find()
-            .populate('userId', 'anonymousId')
+            .populate('userId', 'anonymousId name email')
             .sort({ createdAt: -1 })
             .limit(10)
             .select('severity status detectedKeywords createdAt');
@@ -59,7 +59,16 @@ const getDashboardStats = async (req, res) => {
 // @route GET /api/admin/students
 const getAllStudents = async (req, res) => {
     try {
-        const students = await User.find({ role: 'student' }).select('-password');
+        let filter = { role: 'student' };
+
+        // Counselor Restriction: Only show students with appointments with me
+        if (req.user.role === 'counselor') {
+            const myBookings = await Booking.find({ counselorId: req.user._id }).select('studentId');
+            const studentIds = myBookings.map(b => b.studentId);
+            filter._id = { $in: studentIds };
+        }
+
+        const students = await User.find(filter).select('-password');
         res.json(students);
     } catch (error) {
         res.status(500).json({ message: error.message });

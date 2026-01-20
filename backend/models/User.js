@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     anonymousId: { type: String, unique: true },
+    name: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     college: { type: String },
@@ -11,6 +12,11 @@ const userSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     streak: { type: Number, default: 0 },
     lastCheckIn: { type: Date },
+    // For Counselors
+    availability: [{
+        day: { type: String }, // e.g., "Monday"
+        slots: [{ type: String }] // e.g., ["10:00 AM", "11:00 AM"]
+    }]
 }, { timestamps: true });
 
 userSchema.pre('save', async function () {
