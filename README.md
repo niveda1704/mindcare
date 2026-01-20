@@ -2,24 +2,20 @@
 
 > **An AI-Powered Digital Sanctuary for Student Mental Wellness**
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![Status](https://img.shields.io/badge/status-active-success.svg)
-
 MindCare is a holistic mental health platform designed to bridge the gap between students and counselors. By integrating **Google Gemini AI** for 24/7 empathetic support and **Socket.io** for real-time crisis alerts, it creates a scalable, responsive safety net for educational campuses, ensuring professional guidance is always within reach.
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
-### 🔧 Tech Stack
+###  Tech Stack
 *   **Frontend**: `React 19`, `Vite`, `TailwindCSS`, `Framer Motion`
 *   **Backend**: `Node.js`, `Express.js`
-*   **Database**: `MongoDB` (Mongoose ODM)
-*   **Real-time**: `Socket.io` (WebSockets)
+*   **Database**: `MongoDB` 
+*   **Real-time**: `Socket.io` 
 *   **AI Engine**: `Google Gemini 1.5 Flash`
 
-### 🔑 Key Modules
+###  Key Modules
 1.  **Context-Aware Chat Bot**: AI utilizing RAG-like context to provide empathetic, non-medical support.
 2.  **Live Counselor Dashboard**: Websocket-enabled dashboard for counselors to view student status changes instantly.
 3.  **Clinical Notes System**: Encrypted, private database collections for counselor session records.
@@ -27,7 +23,7 @@ MindCare is a holistic mental health platform designed to bridge the gap between
 
 ---
 
-## ⚡ Quick Start Guide
+##  Quick Start Guide
 
 ### 1. Prerequisites
 *   Node.js (v18+)
@@ -66,7 +62,7 @@ EMAIL_PASS=your_app_password
 
 ---
 
-## 📂 Project Tree
+## Project Tree
 
 ```text
 mindcare/
@@ -81,7 +77,7 @@ mindcare/
 └── public/               # Static Assets
 ```
 
-## �️ Security Features
+##  Security Features
 *   **JWT Authentication**: Stateless session management.
 *   **Bcrypt Hashing**: Industry-standard password encryption.
 *   **OTP Verification**: 2-Factor email validation for student registration.
