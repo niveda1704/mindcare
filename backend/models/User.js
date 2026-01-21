@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     college: { type: String },
     rollNumber: { type: String },
     role: { type: String, enum: ['student', 'counselor', 'admin'], default: 'student' },
+    parentEmail: { type: String, required: false }, // Parent/Guardian Email for emergency alerts
     isVerified: { type: Boolean, default: false },
     streak: { type: Number, default: 0 },
     lastCheckIn: { type: Date },

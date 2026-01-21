@@ -33,14 +33,29 @@ const Home = () => {
         { id: 'very_sad', icon: CloudRain, label: 'Stormy', color: 'text-gray-400', bg: 'bg-black/[0.02]', value: 1 },
     ];
 
-    const { play } = useSound();
+    const [showWelcome, setShowWelcome] = useState(false);
+    const { playTrack, pause, currentTrack } = useSound();
 
     useEffect(() => {
-        // Attempt to play music automatically when entering Home
-        // Browser policy might block this if no interaction happened yet,
-        // but since user clicked Login, it should work.
-        play();
-    }, [play]);
+        // Play audio immediately
+        playTrack('piano');
+
+        // Show Welcome Note at 3 seconds
+        const welcomeTimer = setTimeout(() => {
+            setShowWelcome(true);
+        }, 3000);
+
+        // Stop Audio at 20 seconds
+        const audioTimer = setTimeout(() => {
+            pause();
+        }, 20000);
+
+        return () => {
+            clearTimeout(welcomeTimer);
+            clearTimeout(audioTimer);
+            pause(); // Cleanup audio on unmount
+        };
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -115,6 +130,51 @@ const Home = () => {
 
     return (
         <div className="space-y-16 pb-20 relative">
+            {/* Welcome Overlay (Appears after 3s) */}
+            <AnimatePresence>
+                {showWelcome && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-white/60 backdrop-blur-md"
+                        onClick={() => setShowWelcome(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            className="bg-white p-12 rounded-[3rem] shadow-2xl max-w-lg text-center border border-morning-accent-lavender/20 relative overflow-hidden"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-morning-accent-teal via-morning-accent-lavender to-morning-accent-rose animate-gradient-x" />
+
+                            <motion.div
+                                animate={{ rotate: [0, 10, -10, 0] }}
+                                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                                className="w-24 h-24 bg-morning-accent-lavender/10 rounded-full flex items-center justify-center mx-auto mb-8"
+                            >
+                                <Sun size={48} className="text-morning-accent-lavender" />
+                            </motion.div>
+
+                            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+                                Welcome to your {new Date().toLocaleDateString('en-US', { weekday: 'long' })}, {user?.name?.split(' ')[0]}
+                            </h2>
+                            <p className="text-gray-500 text-lg leading-relaxed mb-10">
+                                "Let the light within you rise with the sun."
+                            </p>
+
+                            <button
+                                onClick={() => setShowWelcome(false)}
+                                className="px-10 py-4 bg-morning-accent-lavender text-white rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+                            >
+                                Begin My Journey
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Hero Section */}
             <header className="relative py-16 px-6 text-center overflow-hidden">
                 <motion.div
@@ -206,6 +266,11 @@ const Home = () => {
                                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-1">Registry of your internal landscape</p>
                             </div>
                         </div>
+
+                        {/* Sound Preview Tester (Hidden as per request) */}
+                        {/* <div className="mb-14 p-8 glass-panel border border-morning-accent-lavender/30 rounded-[2.5rem] relative overflow-hidden bg-white/40">
+                             ... (hidden)
+                        </div> */}
 
                         <div className="flex flex-wrap justify-center gap-6 md:gap-10">
                             {moods.map((m) => (

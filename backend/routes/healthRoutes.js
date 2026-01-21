@@ -16,7 +16,15 @@ router.get('/', async (req, res) => {
 
 router.get('/daily-quote', async (req, res) => {
     try {
-        const prompt = "Generate a short, poetic, and comforting single sentence thought for a student's mental wellbeing. Do not use quotes around it. Just the text.";
+        // Diverse prompts for variety
+        const themes = [
+            "short poem about hope and sunrise",
+            "philosophical thought about inner strength",
+            "gentle reminder to breathe and be present",
+            "metaphor about growth and nature"
+        ];
+        const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+        const prompt = `Generate a unique, beautiful, and ${randomTheme} for a student's mental wellbeing. Max 25 words. deeply touching and poetic. Do not use quotes.`;
         const quote = await getAiResponse(prompt);
         res.json({ quote });
     } catch (error) {

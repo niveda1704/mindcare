@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
 
         // Create user (password will be hashed via pre‑save hook)
         const anonymousId = `Anon-${Math.floor(1000 + Math.random() * 9000)}`;
-        const user = await User.create({ name, email, password, role, rollNumber, college, anonymousId });
+        const user = await User.create({ name, email, password, role, rollNumber, college, parentEmail: req.body.parentEmail, anonymousId });
 
         // Generate OTP for email verification
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -119,18 +119,28 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        // Developer Role Management
-        if (email === 'nivedasree1704@gmail.com' && user.role !== 'admin') {
-            user.role = 'admin';
-            await user.save();
-        } else if (email === '24uam136niveda@kgkite.ac.in' && user.role !== 'student') {
-            user.role = 'student'; // Revert to student for testing
-            await user.save();
-        }
+        // Developer Role Management (Safeguard: Only run if explicitly needed, disabled for production safety)
+        // if (email === 'nivedasree1704@gmail.com' && user.role !== 'admin') {
+        //     user.role = 'admin';
+        //     await user.save();
+        // }
 
         // Verify password (bcrypt hash)
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) return res.status(401).json({ message: 'Invalid credentials' });
+
+        // STRICT ROLE ENFORCEMENT
+        // If the user claims to be an admin or counselor, their email MUST be in the allowed list.
+        // You can update these lists as needed.
+        const ALLOWED_ADMINS = ['nivedasree1704@gmail.com', 'admin@mindcare.com'];
+        const ALLOWED_COUNSELORS = ['counselor@mindcare.com', 'dr.smith@mindcare.com'];
+
+        if (user.role === 'admin' && !ALLOWED_ADMINS.includes(email)) {
+            return res.status(403).json({ message: 'Access Denied: You are not authorized as an Admin.' });
+        }
+        if (user.role === 'counselor' && !ALLOWED_COUNSELORS.includes(email)) {
+            return res.status(403).json({ message: 'Access Denied: You are not authorized as a Counselor.' });
+        }
 
         // Role‑specific handling
         if (user.role === 'student') {
@@ -143,18 +153,26 @@ const loginUser = async (req, res) => {
                 return res.status(400).json({ message: 'Roll number mismatch' });
             }
 
-            // Generate OTP for 2FA
+            // SIMPLIFIED LOGIN FLOW (Requested):
+            // If user is already verified (from registration or previous login), skip OTP (2FA).
+            // Only ask for OTP if account is NOT verified yet.
+            if (user.isVerified) {
+                const token = generateToken(user._id);
+                return res.json({ message: 'Login successful', token, user: { id: user._id, role: user.role, email: user.email } });
+            }
+
+            // If NOT verified, generate OTP for verification (First time login / Verification)
             const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
             await OTP.deleteMany({ userId: user._id });
             await OTP.create({ userId: user._id, otp: otpCode });
 
-            console.log(`\n============================\n[LOGIN 2FA] OTP for ${user.email}: ${otpCode}\n============================\n`);
+            console.log(`\n============================\n[LOGIN VERIFICATION] OTP for ${user.email}: ${otpCode}\n============================\n`);
 
             await sendEmail(
                 user.email,
-                'MindCare - Login Verification',
-                `Your login verification code is: ${otpCode}`,
-                `<h3>MindCare Login 🔐</h3><p>Your verification code is: <strong>${otpCode}</strong></p><p>If you did not request this, please ignore it.</p>`
+                'MindCare - Verify Your Account',
+                `Your verification code is: ${otpCode}`,
+                `<h3>MindCare Login 🔐</h3><p>Your verification code is: <strong>${otpCode}</strong></p><p>Please verify your account to proceed.</p>`
             );
 
             return res.json({ message: 'OTP sent to email', needsVerification: true, email: user.email });

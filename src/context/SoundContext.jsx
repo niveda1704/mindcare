@@ -6,77 +6,46 @@ export const useSound = () => useContext(SoundContext);
 
 export const SoundProvider = ({ children }) => {
     const [isPlaying, setIsPlaying] = useState(false);
-    const audioContextRef = useRef(null);
-    const gainNodeRef = useRef(null);
-    const oscillatorsRef = useRef([]);
+    const [currentTrack, setCurrentTrack] = useState(null);
+    const audioRef = useRef(null);
 
-    const initAudio = () => {
-        if (!audioContextRef.current) {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioContextRef.current = new AudioContext();
-
-            const masterGain = audioContextRef.current.createGain();
-            masterGain.gain.setValueAtTime(0, audioContextRef.current.currentTime);
-            masterGain.connect(audioContextRef.current.destination);
-            gainNodeRef.current = masterGain;
-
-            // Refreshing 'Morning Dew' D Major (Open)
-            // Clean, pure, and very harmonious to avoid buzzing
-            const freqs = [146.83, 220.00, 293.66, 369.99, 440.00];
-
-            freqs.forEach((freq) => {
-                const osc = audioContextRef.current.createOscillator();
-                const oscGain = audioContextRef.current.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioContextRef.current.currentTime);
-                // Very subtle detuning for natural warmth without buzzing
-                osc.detune.setValueAtTime(Math.random() * 4 - 2, audioContextRef.current.currentTime);
-                oscGain.gain.setValueAtTime(0.05, audioContextRef.current.currentTime);
-
-                osc.connect(oscGain);
-                oscGain.connect(masterGain);
-
-                osc.start();
-                oscillatorsRef.current.push({ osc, gain: oscGain });
-
-                setInterval(() => {
-                    if (audioContextRef.current?.state === 'running') {
-                        const now = audioContextRef.current.currentTime;
-                        const randomGain = 0.02 + Math.random() * 0.04;
-                        oscGain.gain.setTargetAtTime(randomGain, now, 2);
-                    }
-                }, 6000 + Math.random() * 4000);
-            });
-        }
+    // Track Library
+    const tracks = {
+        'piano': 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=piano-moment-111452.mp3', // Soft Piano
+        'forest': 'https://cdn.pixabay.com/download/audio/2021/08/09/audio_88447e769f.mp3?filename=forest-birds-114510.mp3',
+        'rain': 'https://cdn.pixabay.com/download/audio/2022/07/04/audio_3d1d141e9d.mp3?filename=heavy-rain-nature-sounds-8186.mp3',
+        'ocean': 'https://cdn.pixabay.com/download/audio/2022/02/07/audio_804e9c2776.mp3?filename=ocean-waves-111774.mp3'
     };
 
-    const play = () => {
-        if (!audioContextRef.current) initAudio();
-        const ctx = audioContextRef.current;
-        const masterGain = gainNodeRef.current;
+    const playTrack = (trackName = 'piano') => {
+        if (!audioRef.current) {
+            audioRef.current = new Audio(tracks[trackName]);
+            audioRef.current.loop = true;
+            audioRef.current.volume = 0.5;
+        } else if (currentTrack !== trackName) {
+            // If switching tracks, stop the old one
+            audioRef.current.pause();
+            audioRef.current = new Audio(tracks[trackName]);
+            audioRef.current.loop = true;
+            audioRef.current.volume = 0.5;
+        }
 
-        if (ctx.state === 'suspended') ctx.resume();
-
-        masterGain.gain.setTargetAtTime(0.2, ctx.currentTime, 1);
+        audioRef.current.play().catch(e => console.log("Audio play failed (user interaction needed first):", e));
         setIsPlaying(true);
+        setCurrentTrack(trackName);
     };
 
     const pause = () => {
-        if (audioContextRef.current && gainNodeRef.current) {
-            const ctx = audioContextRef.current;
-            gainNodeRef.current.gain.setTargetAtTime(0, ctx.currentTime, 0.5);
-            setTimeout(() => {
-                ctx.suspend();
-                setIsPlaying(false);
-            }, 500);
+        if (audioRef.current) {
+            audioRef.current.pause();
+            setIsPlaying(false);
         }
     };
 
-    const toggle = () => isPlaying ? pause() : play();
+    const toggle = () => isPlaying ? pause() : playTrack(currentTrack || 'piano');
 
     return (
-        <SoundContext.Provider value={{ isPlaying, play, pause, toggle }}>
+        <SoundContext.Provider value={{ isPlaying, playTrack, pause, toggle, currentTrack }}>
             {children}
         </SoundContext.Provider>
     );

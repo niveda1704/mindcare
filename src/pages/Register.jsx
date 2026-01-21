@@ -12,6 +12,8 @@ const Register = () => {
         password: '',
         college: '',
         rollNumber: '',
+        residenceType: 'Day Scholar',
+        parentEmail: '',
         consent: false
     });
     const [loading, setLoading] = useState(false);
@@ -139,6 +141,45 @@ const Register = () => {
                                                 placeholder="e.g. 21BCE01"
                                                 value={formData.rollNumber}
                                                 onChange={(e) => setFormData({ ...formData, rollNumber: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] pl-4">Residence Type</label>
+                                        <div className="flex bg-white/40 border border-black/5 rounded-2xl p-1.5 shadow-inner">
+                                            {['Day Scholar', 'Hosteller'].map((type) => (
+                                                <button
+                                                    key={type}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const isHosteller = type === 'Hosteller';
+                                                        setFormData(prev => ({
+                                                            ...prev,
+                                                            residenceType: type,
+                                                            parentEmail: isHosteller ? 'warden@mindcare.com' : ''
+                                                        }));
+                                                    }}
+                                                    className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-500 ${formData.residenceType === type ? 'bg-white shadow-sm text-morning-accent-lavender' : 'text-gray-400 hover:text-gray-600'}`}
+                                                >
+                                                    {type}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] pl-4">
+                                            {formData.residenceType === 'Hosteller' ? 'Warden Email' : 'Guardian Email'}
+                                        </label>
+                                        <div className="relative group">
+                                            <Heart className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-morning-accent-lavender transition-colors" size={18} />
+                                            <input
+                                                type="email"
+                                                required
+                                                readOnly={formData.residenceType === 'Hosteller'}
+                                                className={`input-field pl-16 text-base ${formData.residenceType === 'Hosteller' ? 'bg-black/[0.02] text-gray-500 cursor-not-allowed' : ''}`}
+                                                placeholder={formData.residenceType === 'Hosteller' ? 'warden@mindcare.com' : 'parent@email.com'}
+                                                value={formData.parentEmail}
+                                                onChange={(e) => setFormData({ ...formData, parentEmail: e.target.value })}
                                             />
                                         </div>
                                     </div>

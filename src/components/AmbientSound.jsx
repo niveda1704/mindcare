@@ -15,8 +15,8 @@ const AmbientSound = () => {
                 whileTap={{ scale: 0.9 }}
                 onClick={toggle}
                 className={`flex items-center gap-3 px-4 py-3 rounded-full backdrop-blur-xl border shadow-glass-light transition-all duration-700 ${isPlaying
-                        ? 'bg-morning-accent-teal/80 text-white border-morning-accent-teal/20'
-                        : 'bg-white/60 text-gray-500 border-black/5 hover:bg-white/80'
+                    ? 'bg-morning-accent-teal/80 text-white border-morning-accent-teal/20'
+                    : 'bg-white/60 text-gray-500 border-black/5 hover:bg-white/80'
                     }`}
             >
                 {isPlaying ? (
@@ -28,12 +28,12 @@ const AmbientSound = () => {
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                             </span>
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] hidden sm:inline-block">Serenity On</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] hidden sm:inline-block">Playing: Soft Piano</span>
                     </>
                 ) : (
                     <>
                         <Music size={20} />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] hidden sm:inline-block">Enable Calm</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] hidden sm:inline-block">Play Piano Vibe</span>
                     </>
                 )}
             </motion.button>
