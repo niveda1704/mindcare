@@ -6,16 +6,25 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const ChatSupport = () => {
+    const { t, i18n } = useTranslation();
     const [messages, setMessages] = useState([
         {
             id: 'welcome',
             sender: 'ai',
-            text: "Welcome to the serene sanctuary. I'm your Guide. The air is fresh, and I'm here to listen to your morning thoughts. How are you feeling in this clarity?",
+            text: t('chat.welcomeMessage'),
             timestamp: new Date()
         }
     ]);
+
+    useEffect(() => {
+        setMessages(prev => prev.map(msg =>
+            msg.id === 'welcome' ? { ...msg, text: t('chat.welcomeMessage') } : msg
+        ));
+    }, [t, i18n.language]);
+
     const [input, setInput] = useState('');
     const [typing, setTyping] = useState(false);
     const [isListening, setIsListening] = useState(false);
@@ -40,7 +49,7 @@ const ChatSupport = () => {
             recognitionRef.current.onerror = (event) => {
                 console.error("Speech Recognition Error", event.error);
                 setIsListening(false);
-                toast.error("Reflection lost. Try again.");
+                toast.error(t('chat.reflectionLost'));
             };
 
             recognitionRef.current.onend = () => {
@@ -51,7 +60,7 @@ const ChatSupport = () => {
 
     const toggleListening = () => {
         if (!recognitionRef.current) {
-            toast.error("Voice input is not supported in this sanctuary.");
+            toast.error(t('chat.voiceNotSupported'));
             return;
         }
 
@@ -108,7 +117,7 @@ const ChatSupport = () => {
             setMessages(prev => [...prev, {
                 id: Date.now() + 1,
                 sender: 'ai',
-                text: "The breeze is making it hard to hear. Let me take a breath and try again.",
+                text: t('chat.errorResponse'),
                 timestamp: new Date()
             }]);
         } finally {
@@ -117,21 +126,21 @@ const ChatSupport = () => {
     };
 
     const clearChat = () => {
-        if (window.confirm("Clearing the mist will start a new session. Proceed?")) {
+        if (window.confirm(t('chat.clearConfirm'))) {
             setMessages([{
                 id: 'welcome',
                 sender: 'ai',
-                text: "The sanctuary is clear. I'm waiting for your next reflection.",
+                text: t('chat.clearedMessage'),
                 timestamp: new Date()
             }]);
         }
     };
 
     const suggestions = [
-        "The morning feels fresh",
-        "Seeking clarity for my mind",
-        "Expectations from the day",
-        "Guide me through serenity"
+        t('chat.suggestions.fresh'),
+        t('chat.suggestions.clarity'),
+        t('chat.suggestions.expectations'),
+        t('chat.suggestions.guide')
     ];
 
     return (
@@ -152,11 +161,11 @@ const ChatSupport = () => {
                     </div>
                     <div>
                         <div className="flex items-center gap-3">
-                            <h3 className="font-bold text-gray-800 text-xl tracking-tight">Sanctuary Guide</h3>
+                            <h3 className="font-bold text-gray-800 text-xl tracking-tight">{t('chat.headerTitle')}</h3>
                             <Sparkles size={16} className="text-morning-accent-amber animate-pulse" />
                             <Sun size={16} className="text-morning-accent-amber animate-spin-slow" />
                         </div>
-                        <p className="text-[10px] font-black text-morning-accent-lavender uppercase tracking-[0.4em] mt-1">Sanctuary Presence • Anonymous</p>
+                        <p className="text-[10px] font-black text-morning-accent-lavender uppercase tracking-[0.4em] mt-1">{t('chat.headerSubtitle')}</p>
                     </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -250,7 +259,7 @@ const ChatSupport = () => {
                         <input
                             type="text"
                             className="w-full px-10 py-6 rounded-[2.5rem] bg-white/60 border border-black/5 focus:border-morning-accent-lavender/30 focus:ring-[15px] focus:ring-morning-accent-lavender/5 outline-none transition-all duration-1000 text-lg font-medium text-gray-800 placeholder:text-gray-300 shadow-glass-light"
-                            placeholder={isListening ? "The sanctuary is listening..." : "Whisper your heart here..."}
+                            placeholder={isListening ? t('chat.listeningPlaceholder') : t('chat.inputPlaceholder')}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                         />
@@ -273,7 +282,7 @@ const ChatSupport = () => {
                 <div className="mt-6 flex items-center justify-center gap-4 opacity-30 select-none">
                     <div className="h-px w-10 bg-gray-300" />
                     <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.5em]">
-                        Your reflections are private and sacred
+                        {t('chat.privacyNote')}
                     </p>
                     <div className="h-px w-10 bg-gray-300" />
                 </div>

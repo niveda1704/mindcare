@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Menu, X, Home, MessageCircle, Calendar, BookOpen, Users, LogOut, Settings, ClipboardCheck, Heart, Sun, Wind } from 'lucide-react';
+import { Menu, X, Home, MessageCircle, Calendar, BookOpen, Users, LogOut, Settings, ClipboardCheck, Heart, Sun, Wind, Languages } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NatureBackground from './NatureBackground';
 import VoiceCompanion from './VoiceCompanion';
 import api from '../api/axios';
+import { useTranslation } from 'react-i18next';
 
 const Layout = () => {
     const { user, logout } = useAuth();
@@ -13,6 +14,8 @@ const Layout = () => {
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [health, setHealth] = useState({ backend: 'checking', database: 'checking' });
+    const { t, i18n } = useTranslation();
+    const [showLangMenu, setShowLangMenu] = useState(false);
 
     React.useEffect(() => {
         const checkHealth = async () => {
@@ -33,16 +36,22 @@ const Layout = () => {
         navigate('/login');
     };
 
-    const navItems = [
-        { name: 'Home', path: '/', icon: Home, roles: ['student'] },
-        { name: 'Guide', path: '/chat', icon: MessageCircle, roles: ['student'] },
-        { name: 'Dashboard', path: '/counselor', icon: Users, roles: ['counselor'] },
-        { name: 'Seekers', path: '/students', icon: Users, roles: ['admin', 'counselor'] },
-        { name: 'Vitality', path: '/screening', icon: ClipboardCheck, roles: ['student'] },
-        { name: 'Booking', path: '/booking', icon: Calendar, roles: ['student'] },
-        { name: 'Whispers', path: '/resources', icon: BookOpen, roles: ['student', 'admin'] },
+    const changeLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+        setShowLangMenu(false);
+        setIsMobileMenuOpen(false);
+    };
 
-        { name: 'Admin', path: '/admin', icon: Settings, roles: ['admin'] },
+    const navItems = [
+        { name: t('nav.Home'), path: '/', icon: Home, roles: ['student'] },
+        { name: t('nav.Guide'), path: '/chat', icon: MessageCircle, roles: ['student'] },
+        { name: t('nav.Dashboard'), path: '/counselor', icon: Users, roles: ['counselor'] },
+        { name: t('nav.Seekers'), path: '/students', icon: Users, roles: ['admin', 'counselor'] },
+        { name: t('nav.Vitality'), path: '/screening', icon: ClipboardCheck, roles: ['student'] },
+        { name: t('nav.Booking'), path: '/booking', icon: Calendar, roles: ['student'] },
+        { name: t('nav.Whispers'), path: '/resources', icon: BookOpen, roles: ['student', 'admin'] },
+
+        { name: t('nav.Admin'), path: '/admin', icon: Settings, roles: ['admin'] },
     ];
 
     // Force Admin Role for Owner (Developer Fix)
@@ -91,7 +100,7 @@ const Layout = () => {
                     <div className="hidden md:flex items-center space-x-2">
                         {filteredNavItems.map((item) => (
                             <NavLink
-                                key={item.name}
+                                key={item.path}
                                 to={item.path}
                                 className={({ isActive }) =>
                                     `flex items-center space-x-3 px-5 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-1000 ${isActive
@@ -105,6 +114,24 @@ const Layout = () => {
                             </NavLink>
                         ))}
                         <div className="border-l border-black/5 pl-4 h-6 flex items-center space-x-3">
+                            {/* Language Selector */}
+                            <div className="relative">
+                                <motion.button
+                                    whileHover={{ scale: 1.1 }}
+                                    onClick={() => setShowLangMenu(!showLangMenu)}
+                                    className="p-2 text-gray-400 hover:text-morning-accent-teal transition-all"
+                                >
+                                    <Languages size={20} />
+                                </motion.button>
+                                {showLangMenu && (
+                                    <div className="absolute top-12 right-0 bg-white/90 backdrop-blur-xl border border-black/5 rounded-2xl shadow-glass-light p-2 flex flex-col gap-1 w-32">
+                                        <button onClick={() => changeLanguage('en')} className="text-xs font-bold px-3 py-2 rounded-xl hover:bg-black/5 text-left text-gray-600">English</button>
+                                        <button onClick={() => changeLanguage('ta')} className="text-xs font-bold px-3 py-2 rounded-xl hover:bg-black/5 text-left text-gray-600">தமிழ்</button>
+                                        <button onClick={() => changeLanguage('hi')} className="text-xs font-bold px-3 py-2 rounded-xl hover:bg-black/5 text-left text-gray-600">हिंदी</button>
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="w-8 h-8 rounded-full bg-black/5 border border-black/10 flex items-center justify-center text-[10px] font-black text-morning-accent-lavender">
                                 {user?.name?.charAt(0) || 'S'}
                             </div>
@@ -119,7 +146,10 @@ const Layout = () => {
                     </div>
 
                     {/* Mobile menu button */}
-                    <div className="md:hidden flex items-center">
+                    <div className="md:hidden flex items-center gap-4">
+                        <button onClick={() => setShowLangMenu(!showLangMenu)} className="text-gray-400">
+                            <Languages size={24} />
+                        </button>
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             className="p-3 rounded-2xl text-gray-400 hover:text-gray-800 hover:bg-black/5 border border-black/5 transition-all"
@@ -131,7 +161,7 @@ const Layout = () => {
 
                 {/* Mobile Menu */}
                 <AnimatePresence>
-                    {isMobileMenuOpen && (
+                    {(isMobileMenuOpen || showLangMenu) && (
                         <motion.div
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -139,31 +169,41 @@ const Layout = () => {
                             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                             className="absolute top-24 left-0 right-0 bg-white/90 backdrop-blur-3xl rounded-[2.5rem] border border-black/5 shadow-glass-light overflow-hidden mx-4 p-6 z-50 md:hidden"
                         >
-                            <div className="grid grid-cols-2 gap-4">
-                                {filteredNavItems.map((item) => (
-                                    <NavLink
-                                        key={item.name}
-                                        to={item.path}
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className={({ isActive }) =>
-                                            `flex flex-col items-center justify-center p-6 rounded-[2rem] text-[10px] font-black uppercase tracking-widest transition-all duration-1000 ${isActive
-                                                ? 'bg-black/5 text-gray-900 shadow-glass-light border border-black/5'
-                                                : 'bg-black/[0.02] text-gray-400 hover:text-gray-800 border border-transparent'
-                                            }`
-                                        }
+                            {showLangMenu ? (
+                                <div className="grid grid-cols-1 gap-2">
+                                    <button onClick={() => changeLanguage('en')} className="p-4 rounded-xl bg-white/50 text-center font-bold">English</button>
+                                    <button onClick={() => changeLanguage('ta')} className="p-4 rounded-xl bg-white/50 text-center font-bold">தமிழ்</button>
+                                    <button onClick={() => changeLanguage('hi')} className="p-4 rounded-xl bg-white/50 text-center font-bold">हिंदी</button>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {filteredNavItems.map((item) => (
+                                            <NavLink
+                                                key={item.path}
+                                                to={item.path}
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className={({ isActive }) =>
+                                                    `flex flex-col items-center justify-center p-6 rounded-[2rem] text-[10px] font-black uppercase tracking-widest transition-all duration-1000 ${isActive
+                                                        ? 'bg-black/5 text-gray-900 shadow-glass-light border border-black/5'
+                                                        : 'bg-black/[0.02] text-gray-400 hover:text-gray-800 border border-transparent'
+                                                    }`
+                                                }
+                                            >
+                                                <item.icon size={22} className="mb-3" />
+                                                <span>{item.name}</span>
+                                            </NavLink>
+                                        ))}
+                                    </div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="mt-6 flex items-center justify-center space-x-3 p-5 w-full rounded-[2rem] bg-morning-accent-rose/5 text-morning-accent-rose font-black uppercase tracking-[0.3em] text-[10px] hover:bg-morning-accent-rose hover:text-white transition-all duration-1000 border border-morning-accent-rose/10"
                                     >
-                                        <item.icon size={22} className="mb-3" />
-                                        <span>{item.name}</span>
-                                    </NavLink>
-                                ))}
-                            </div>
-                            <button
-                                onClick={handleLogout}
-                                className="mt-6 flex items-center justify-center space-x-3 p-5 w-full rounded-[2rem] bg-morning-accent-rose/5 text-morning-accent-rose font-black uppercase tracking-[0.3em] text-[10px] hover:bg-morning-accent-rose hover:text-white transition-all duration-1000 border border-morning-accent-rose/10"
-                            >
-                                <LogOut size={20} />
-                                <span>Signal Exit</span>
-                            </button>
+                                        <LogOut size={20} />
+                                        <span>{t('nav.SignalExit')}</span>
+                                    </button>
+                                </>
+                            )}
                         </motion.div>
                     )}
                 </AnimatePresence>

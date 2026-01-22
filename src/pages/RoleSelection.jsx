@@ -3,19 +3,41 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { GraduationCap, Users, ShieldCheck } from 'lucide-react';
 import NatureBackground from '../components/NatureBackground';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const RoleSelection = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const roles = [
-        { id: 'student', title: 'Seeker', icon: GraduationCap, desc: 'Find balance & inner peace', color: 'bg-morning-accent-lavender/20 text-morning-accent-lavender' },
-        { id: 'counselor', title: 'Guide', icon: Users, desc: 'Support & nurture growth', color: 'bg-morning-accent-teal/20 text-morning-accent-teal' },
-        { id: 'admin', title: 'Guardian', icon: ShieldCheck, desc: 'Oversee the sanctuary', color: 'bg-gray-100 text-gray-500' }
+        {
+            id: 'student',
+            title: t('roleSelection.roles.student.title'),
+            icon: GraduationCap,
+            desc: t('roleSelection.roles.student.description'),
+            color: 'bg-morning-accent-lavender/20 text-morning-accent-lavender'
+        },
+        {
+            id: 'counselor',
+            title: t('roleSelection.roles.counselor.title'),
+            icon: Users,
+            desc: t('roleSelection.roles.counselor.description'),
+            color: 'bg-morning-accent-teal/20 text-morning-accent-teal'
+        },
+        {
+            id: 'admin',
+            title: t('roleSelection.roles.admin.title'),
+            icon: ShieldCheck,
+            desc: t('roleSelection.roles.admin.description'),
+            color: 'bg-gray-100 text-gray-500'
+        }
     ];
 
     return (
         <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
             <NatureBackground />
+            <LanguageSwitcher />
 
             <div className="relative z-10 w-full max-w-5xl">
                 <motion.div
@@ -25,9 +47,9 @@ const RoleSelection = () => {
                     className="text-center mb-16"
                 >
                     <h1 className="text-4xl md:text-5xl font-bold text-gray-800 tracking-tight mb-4">
-                        Select Your <span className="text-morning-accent-lavender">Path</span>
+                        {t('roleSelection.titlePrefix')} <span className="text-morning-accent-lavender">{t('roleSelection.titleHighlight')}</span>
                     </h1>
-                    <p className="text-sm font-bold text-gray-500 uppercase tracking-[0.3em]">Choose your perspective</p>
+                    <p className="text-sm font-bold text-gray-500 uppercase tracking-[0.3em]">{t('roleSelection.subTitle')}</p>
                 </motion.div>
 
                 <div className="grid md:grid-cols-3 gap-8">
@@ -48,7 +70,7 @@ const RoleSelection = () => {
                             <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">{role.desc}</p>
 
                             <div className="mt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] border-b border-gray-300 pb-1">Enter Now</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] border-b border-gray-300 pb-1">{t('roleSelection.enterBtn')}</span>
                             </div>
                         </motion.button>
                     ))}

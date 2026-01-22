@@ -133,7 +133,14 @@ const loginUser = async (req, res) => {
         // If the user claims to be an admin or counselor, their email MUST be in the allowed list.
         // You can update these lists as needed.
         const ALLOWED_ADMINS = ['nivedasree1704@gmail.com', 'admin@mindcare.com'];
-        const ALLOWED_COUNSELORS = ['counselor@mindcare.com', 'dr.smith@mindcare.com'];
+        const ALLOWED_COUNSELORS = [
+            'counselor@mindcare.com',
+            'dr.smith@mindcare.com',
+            'nirmaladevi@mindcare.edu',
+            'aruna@mindcare.edu',
+            'anitha@mindcare.edu',
+            'rakesh@mindcare.edu'
+        ];
 
         if (user.role === 'admin' && !ALLOWED_ADMINS.includes(email)) {
             return res.status(403).json({ message: 'Access Denied: You are not authorized as an Admin.' });

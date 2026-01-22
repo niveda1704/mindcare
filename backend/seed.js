@@ -11,11 +11,14 @@ const seedData = async () => {
         console.log("Connected to MongoDB for Seeding");
 
         // 1. Seed Counselors
+        // 1. Seed Counselors
+        await User.deleteMany({ role: 'counselor' });
+        console.log("Cleared existing counselors");
         const counselors = [
-            { email: 'dr.smith@mindcare.edu', password: 'password123', role: 'counselor', college: 'Central University', anonymousId: 'Dr. Sarah Smith' },
-            { email: 'prof.kumar@mindcare.edu', password: 'password123', role: 'counselor', college: 'Technical Institute', anonymousId: 'Prof. Rajesh Kumar' },
-            { email: 'ms.lee@mindcare.edu', password: 'password123', role: 'counselor', college: 'Arts & Science College', anonymousId: 'Ms. Emily Lee' },
-            { email: 'dr.jones@mindcare.edu', password: 'password123', role: 'counselor', college: 'Medical College', anonymousId: 'Dr. David Jones' }
+            { email: 'nirmaladevi@mindcare.edu', password: 'password123', role: 'counselor', college: 'Central University', anonymousId: 'Nirmaladevi' },
+            { email: 'aruna@mindcare.edu', password: 'password123', role: 'counselor', college: 'Technical Institute', anonymousId: 'Aruna' },
+            { email: 'anitha@mindcare.edu', password: 'password123', role: 'counselor', college: 'Arts & Science College', anonymousId: 'Anitha' },
+            { email: 'rakesh@mindcare.edu', password: 'password123', role: 'counselor', college: 'Medical College', anonymousId: 'Rakesh' }
         ];
 
         for (const c of counselors) {

@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Clock, User, CheckCircle, ChevronRight, Star, Loader, Heart, ShieldCheck } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const Booking = () => {
+    const { t } = useTranslation();
     const [step, setStep] = useState(1);
     const [counselors, setCounselors] = useState([]);
     const [selectedCounselor, setSelectedCounselor] = useState(null);
@@ -59,17 +61,16 @@ const Booking = () => {
                 >
                     <CheckCircle size={48} />
                 </motion.div>
-                <h2 className="text-4xl font-bold text-gray-800 mb-4 tracking-tight">Your Clarity is Scheduled</h2>
+                <h2 className="text-4xl font-bold text-gray-800 mb-4 tracking-tight">{t('booking.successTitle')}</h2>
                 <p className="text-gray-500 text-lg leading-relaxed font-medium">
-                    Your session with <span className="text-morning-accent-lavender font-bold">{selectedCounselor?.anonymousId}</span> has been confirmed.
-                    A confirmation email has been sent to your college inbox with the details.
+                    {t('booking.successMsg')}
                 </p>
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     onClick={() => window.location.href = '/'}
                     className="mt-12 btn-primary px-10 py-4"
                 >
-                    Return to Sanctuary
+                    {t('booking.returnHome')}
                 </motion.button>
             </div>
         );
@@ -84,13 +85,13 @@ const Booking = () => {
                     className="relative z-10"
                 >
                     <span className="inline-block px-4 py-1.5 rounded-full bg-morning-accent-lavender/10 text-morning-accent-lavender text-[10px] font-bold uppercase tracking-[0.2em] mb-4">
-                        Serene Guidance
+                        {t('booking.headerTag')}
                     </span>
                     <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 tracking-tight">
-                        Support for <span className="text-morning-accent-lavender">Your Mind</span>
+                        {t('booking.headerTitle')} <span className="text-morning-accent-lavender">{t('booking.headerTitleHighlight')}</span>
                     </h1>
                     <p className="text-lg text-gray-500 max-w-2xl font-medium leading-relaxed">
-                        Take a gentle step towards clarity. Book a confidential session with our verified guides.
+                        {t('booking.headerDesc')}
                     </p>
                 </motion.div>
             </header>
@@ -110,9 +111,9 @@ const Booking = () => {
                                 <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-gray-50 -z-10" />
 
                                 {[
-                                    { step: 1, label: 'Choose Guide', sub: 'Select a serene guide' },
-                                    { step: 2, label: 'Select Time', sub: 'Find a calm moment' },
-                                    { step: 3, label: 'Confirmation', sub: 'Finalize your choice' }
+                                    { step: 1, label: t('booking.steps.1.label'), sub: t('booking.steps.1.sub') },
+                                    { step: 2, label: t('booking.steps.2.label'), sub: t('booking.steps.2.sub') },
+                                    { step: 3, label: t('booking.steps.3.label'), sub: t('booking.steps.3.sub') }
                                 ].map((s) => (
                                     <div key={s.step} className="flex gap-6 relative">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-[10px] transition-all duration-700 shadow-glass-light ${step >= s.step ? 'bg-gray-800 text-white scale-110' : 'bg-white text-gray-300 border border-gray-100'}`}>
@@ -133,7 +134,7 @@ const Booking = () => {
                             <div className="mt-12 p-6 rounded-[1.5rem] bg-morning-accent-teal/5 border border-morning-accent-teal/10 flex items-start gap-3">
                                 <ShieldCheck size={18} className="text-morning-accent-teal shrink-0" />
                                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
-                                    Your sessions are 100% private and protected by standard security protocols.
+                                    {t('booking.privacyNote')}
                                 </p>
                             </div>
                         </div>
@@ -156,12 +157,12 @@ const Booking = () => {
                                             <div className="w-10 h-10 bg-morning-accent-lavender/10 text-morning-accent-lavender rounded-xl flex items-center justify-center">
                                                 <Heart size={20} />
                                             </div>
-                                            <h3 className="text-xl font-bold text-gray-800">Select a Serene Guide</h3>
+                                            <h3 className="text-xl font-bold text-gray-800">{t('booking.selectGuide')}</h3>
                                         </div>
 
                                         {counselors.length === 0 ? (
                                             <div className="text-center py-20 border-2 border-dashed border-gray-100 rounded-[2rem]">
-                                                <p className="text-gray-400 font-medium italic">All our guides are currently assisting others. Please check back soon.</p>
+                                                <p className="text-gray-400 font-medium italic">{t('booking.noGuides')}</p>
                                             </div>
                                         ) : (
                                             <div className="grid gap-4">
@@ -200,7 +201,7 @@ const Booking = () => {
                                                 disabled={!selectedCounselor}
                                                 className="btn-primary px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] disabled:opacity-20"
                                             >
-                                                Select Calendar <ChevronRight size={16} className="ml-2 inline" />
+                                                {t('booking.next')} <ChevronRight size={16} className="ml-2 inline" />
                                             </button>
                                         </div>
                                     </motion.div>
@@ -219,12 +220,12 @@ const Booking = () => {
                                             <div className="w-10 h-10 bg-morning-accent-teal/10 text-morning-accent-teal rounded-xl flex items-center justify-center">
                                                 <Calendar size={20} />
                                             </div>
-                                            <h3 className="text-xl font-bold text-gray-800">Find Your Moment</h3>
+                                            <h3 className="text-xl font-bold text-gray-800">{t('booking.findMoment')}</h3>
                                         </div>
 
                                         <div className="space-y-10">
                                             <div className="space-y-3">
-                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] pl-2">Select Date</label>
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] pl-2">{t('booking.selectDate')}</label>
                                                 <div className="relative group">
                                                     <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none group-focus-within:text-morning-accent-teal transition-colors" size={18} />
                                                     <input
@@ -239,7 +240,7 @@ const Booking = () => {
                                             </div>
 
                                             <div className="space-y-4">
-                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] pl-2">Available Time Slots</label>
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] pl-2">{t('booking.availableSlots')}</label>
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                                     {['09:00 AM', '10:00 AM', '11:00 AM', '02:00 PM', '03:00 PM', '04:00 PM'].map((time) => (
                                                         <button
@@ -256,14 +257,14 @@ const Booking = () => {
                                         </div>
 
                                         <div className="mt-12 pt-8 border-t border-gray-50 flex justify-between items-center">
-                                            <button type="button" onClick={() => setStep(1)} className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] hover:text-gray-800 transition-colors">Back to Guides</button>
+                                            <button type="button" onClick={() => setStep(1)} className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] hover:text-gray-800 transition-colors">{t('booking.back')}</button>
                                             <button
                                                 type="button"
                                                 onClick={() => setStep(3)}
                                                 disabled={!selectedDate || !selectedTime}
                                                 className="btn-primary px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] disabled:opacity-20"
                                             >
-                                                Review Choices <ChevronRight size={16} className="ml-2 inline" />
+                                                {t('booking.next')} <ChevronRight size={16} className="ml-2 inline" />
                                             </button>
                                         </div>
                                     </motion.div>
@@ -282,32 +283,32 @@ const Booking = () => {
                                             <div className="w-10 h-10 bg-morning-accent-lavender/20 text-morning-accent-lavender rounded-xl flex items-center justify-center">
                                                 <ShieldCheck size={20} />
                                             </div>
-                                            <h3 className="text-xl font-bold text-gray-800">Confirm Your Appointment</h3>
+                                            <h3 className="text-xl font-bold text-gray-800">{t('booking.confirmTitle')}</h3>
                                         </div>
 
                                         <div className="p-10 rounded-[2.5rem] bg-white/60 border border-black/5 shadow-inner space-y-8">
                                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-6">
-                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">Selected Guide</span>
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">{t('booking.selectedGuide')}</span>
                                                 <span className="text-xl font-bold text-gray-800">{selectedCounselor?.anonymousId}</span>
                                             </div>
                                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-6">
-                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">Scheduled Date</span>
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">{t('booking.scheduledDate')}</span>
                                                 <span className="text-xl font-bold text-gray-800">{new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
                                             </div>
                                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">Session Time</span>
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em]">{t('booking.sessionTime')}</span>
                                                 <span className="text-xl font-bold text-morning-accent-lavender">{selectedTime}</span>
                                             </div>
                                         </div>
 
                                         <div className="mt-12 pt-8 border-t border-gray-50 flex justify-between items-center">
-                                            <button type="button" onClick={() => setStep(2)} className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] hover:text-gray-800 transition-colors">Modify Details</button>
+                                            <button type="button" onClick={() => setStep(2)} className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] hover:text-gray-800 transition-colors">{t('booking.back')}</button>
                                             <button
                                                 type="submit"
                                                 disabled={loading}
                                                 className="btn-primary px-12 py-4 text-xs font-bold uppercase tracking-[0.2em]"
                                             >
-                                                {loading ? <Loader className="animate-spin" size={18} /> : 'Finalize Booking'}
+                                                {loading ? <Loader className="animate-spin" size={18} /> : t('booking.submit')}
                                             </button>
                                         </div>
                                     </motion.div>

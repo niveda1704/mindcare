@@ -4,8 +4,12 @@ import { BookOpen, Headphones, Video, FileText, Search, Tag, Globe, ExternalLink
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 
+import { useTranslation } from 'react-i18next';
+
 const Resources = () => {
+    const { t } = useTranslation();
     const [resources, setResources] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('All');
     const [search, setSearch] = useState('');
@@ -25,12 +29,21 @@ const Resources = () => {
         fetchResources();
     }, []);
 
-    const categories = ['All', 'Anxiety', 'Stress', 'Sleep', 'Academic', 'Social', 'Meditation'];
+    const categories = [
+        t('resources.categories.all'),
+        t('resources.categories.anxiety'),
+        t('resources.categories.stress'),
+        t('resources.categories.sleep'),
+        t('resources.categories.academic'),
+        t('resources.categories.social'),
+        t('resources.categories.meditation')
+    ];
 
     const filteredResources = resources.filter(r => {
         const rCat = r.category || 'General';
         const rTitle = r.title || '';
-        const matchesFilter = filter === 'All' || rCat === filter;
+        const matchesFilter = filter === t('resources.categories.all') || rCat === filter || (filter === 'All' && true); // Fallback for initial state if needed, though safer to init with translated All
+
         const matchesSearch = rTitle.toLowerCase().includes(search.toLowerCase());
         return matchesFilter && matchesSearch;
     });
@@ -64,13 +77,13 @@ const Resources = () => {
                     className="relative z-10"
                 >
                     <span className="inline-block px-5 py-2 rounded-full bg-morning-accent-lavender/5 text-morning-accent-lavender text-[10px] font-black uppercase tracking-[0.3em] mb-6 border border-black/5">
-                        Morning Library
+                        {t('resources.headerTag')}
                     </span>
                     <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6 tracking-tighter">
-                        Wisdom <span className="text-morning-accent-lavender glow-text">Sanctuary</span>
+                        {t('resources.headerTitle')} <span className="text-morning-accent-lavender glow-text">{t('resources.headerTitleHighlight')}</span>
                     </h1>
                     <p className="text-lg text-gray-500 max-w-2xl mx-auto font-medium leading-relaxed">
-                        A peaceful grove of curated guides, sounds, and ancestral wisdom to nourish your spirit during the fresh hours.
+                        {t('resources.headerDesc')}
                     </p>
                 </motion.div>
 
@@ -98,7 +111,7 @@ const Resources = () => {
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-morning-accent-lavender transition-colors" size={20} />
                     <input
                         type="text"
-                        placeholder="Seek inner peace..."
+                        placeholder={t('resources.searchPlaceholder')}
                         className="input-field pl-16 py-5 bg-white/60 focus:bg-white/80 text-base shadow-inner"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
@@ -110,7 +123,7 @@ const Resources = () => {
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-40 space-y-6">
                     <Loader className="animate-spin text-morning-accent-lavender" size={48} />
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] animate-pulse">Illuminating the scrolls...</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] animate-pulse">{t('resources.loading')}</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
@@ -122,7 +135,7 @@ const Resources = () => {
                                 className="col-span-full py-32 text-center"
                             >
                                 <Wind size={40} className="mx-auto text-gray-400 mb-6" />
-                                <p className="text-gray-400 font-medium italic text-lg tracking-wide">The breeze blows through an empty space. Try another path.</p>
+                                <p className="text-gray-400 font-medium italic text-lg tracking-wide">{t('resources.noResults')}</p>
                             </motion.div>
                         ) : (
                             filteredResources.map((resource, idx) => {
@@ -186,7 +199,7 @@ const Resources = () => {
                                                     whileTap={{ scale: 0.98 }}
                                                     className="w-full py-5 rounded-[1.8rem] bg-black/5 text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 border border-black/5 group-hover:bg-morning-accent-lavender group-hover:text-white group-hover:border-transparent group-hover:shadow-[0_0_30px_rgba(155,140,230,0.15)] transition-all duration-1000"
                                                 >
-                                                    Illuminate <ExternalLink size={16} className="opacity-50" />
+                                                    {t('resources.illuminateBtn')} <ExternalLink size={16} className="opacity-50" />
                                                 </motion.a>
                                             </div>
                                         </div>
@@ -201,7 +214,7 @@ const Resources = () => {
             <footer className="text-center pt-20 flex flex-col items-center gap-6">
                 <Sun size={20} className="text-gray-300" />
                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] select-none">
-                    Breezes of knowledge added with every new dawn
+                    {t('resources.footer')}
                 </p>
             </footer>
         </div>

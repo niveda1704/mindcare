@@ -7,12 +7,14 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
+import welcomeGirlV2 from '../assets/welcome_girl_v2.png';
+import { useTranslation } from 'react-i18next';
 
 
 const Home = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (user?.role === 'admin') navigate('/admin');
@@ -26,11 +28,11 @@ const Home = () => {
     const [quote, setQuote] = useState("");
 
     const moods = [
-        { id: 'very_happy', icon: Sparkles, label: 'Radiant', color: 'text-morning-accent-amber', bg: 'bg-morning-accent-amber/10', value: 5 },
-        { id: 'happy', icon: Smile, label: 'Peaceful', color: 'text-morning-accent-teal', bg: 'bg-morning-accent-teal/10', value: 4 },
-        { id: 'neutral', icon: Meh, label: 'Steady', color: 'text-morning-accent-lavender', bg: 'bg-morning-accent-lavender/10', value: 3 },
-        { id: 'sad', icon: Frown, label: 'Heavy', color: 'text-morning-accent-rose', bg: 'bg-morning-accent-rose/10', value: 2 },
-        { id: 'very_sad', icon: CloudRain, label: 'Stormy', color: 'text-gray-400', bg: 'bg-black/[0.02]', value: 1 },
+        { id: 'very_happy', icon: Sparkles, label: t('home.moods.radiant'), color: 'text-morning-accent-amber', bg: 'bg-morning-accent-amber/10', value: 5 },
+        { id: 'happy', icon: Smile, label: t('home.moods.peaceful'), color: 'text-morning-accent-teal', bg: 'bg-morning-accent-teal/10', value: 4 },
+        { id: 'neutral', icon: Meh, label: t('home.moods.steady'), color: 'text-morning-accent-lavender', bg: 'bg-morning-accent-lavender/10', value: 3 },
+        { id: 'sad', icon: Frown, label: t('home.moods.heavy'), color: 'text-morning-accent-rose', bg: 'bg-morning-accent-rose/10', value: 2 },
+        { id: 'very_sad', icon: CloudRain, label: t('home.moods.stormy'), color: 'text-gray-400', bg: 'bg-black/[0.02]', value: 1 },
     ];
 
     const [showWelcome, setShowWelcome] = useState(false);
@@ -106,11 +108,11 @@ const Home = () => {
     };
 
     const actions = [
-        { title: 'Breeze of AI', desc: 'Secure, anonymous thoughts', icon: MessageCircle, path: '/chat', color: 'bg-morning-accent-teal/10 text-morning-accent-teal', delay: 0.1 },
-        { title: 'Seek Guidance', desc: 'Connect with a guide', icon: Calendar, path: '/booking', color: 'bg-morning-accent-lavender/10 text-morning-accent-lavender', delay: 0.2 },
-        { title: 'The Shared Hill', desc: 'Anonymously connect', icon: Users, path: '/forum', color: 'bg-morning-accent-rose/10 text-morning-accent-rose', delay: 0.3 },
-        { title: 'Morning Wisdom', desc: 'Guides for your journey', icon: BookOpen, path: '/resources', color: 'bg-morning-accent-amber/10 text-morning-accent-amber', delay: 0.4 },
-        { title: 'Heart Registry', desc: 'PHQ-9 & GAD-7 Tools', icon: ClipboardCheck, path: '/screening', color: 'bg-black/[0.02] text-gray-400', delay: 0.5 },
+        { title: t('home.actions.chat.title'), desc: t('home.actions.chat.desc'), icon: MessageCircle, path: '/chat', color: 'bg-morning-accent-teal/10 text-morning-accent-teal', delay: 0.1 },
+        { title: t('home.actions.booking.title'), desc: t('home.actions.booking.desc'), icon: Calendar, path: '/booking', color: 'bg-morning-accent-lavender/10 text-morning-accent-lavender', delay: 0.2 },
+        { title: t('home.actions.forum.title'), desc: t('home.actions.forum.desc'), icon: Users, path: '/forum', color: 'bg-morning-accent-rose/10 text-morning-accent-rose', delay: 0.3 },
+        { title: t('home.actions.resources.title'), desc: t('home.actions.resources.desc'), icon: BookOpen, path: '/resources', color: 'bg-morning-accent-amber/10 text-morning-accent-amber', delay: 0.4 },
+        { title: t('home.actions.screening.title'), desc: t('home.actions.screening.desc'), icon: ClipboardCheck, path: '/screening', color: 'bg-black/[0.02] text-gray-400', delay: 0.5 },
     ];
 
     const chartData = [...moodHistory].reverse().map(m => {
@@ -131,6 +133,7 @@ const Home = () => {
     return (
         <div className="space-y-16 pb-20 relative">
             {/* Welcome Overlay (Appears after 3s) */}
+            {/* Welcome Overlay (Appears after 3s) */}
             <AnimatePresence>
                 {showWelcome && (
                     <motion.div
@@ -141,35 +144,95 @@ const Home = () => {
                         onClick={() => setShowWelcome(false)}
                     >
                         <motion.div
-                            initial={{ scale: 0.9, y: 20 }}
-                            animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0.9, y: 20 }}
-                            className="bg-white p-12 rounded-[3rem] shadow-2xl max-w-lg text-center border border-morning-accent-lavender/20 relative overflow-hidden"
+                            initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                            animate={{ scale: 1, y: 0, opacity: 1 }}
+                            exit={{ scale: 0.9, y: 20, opacity: 0 }}
+                            className="bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl max-w-2xl w-[90%] text-center border border-morning-accent-lavender/20 relative overflow-hidden"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-morning-accent-teal via-morning-accent-lavender to-morning-accent-rose animate-gradient-x" />
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-morning-accent-teal via-morning-accent-lavender to-morning-accent-rose animate-gradient-x" />
+
+                            <div className="relative mb-6 inline-block">
+                                {/* The Girl Image (Swaying) */}
+                                <motion.img
+                                    src={welcomeGirlV2}
+                                    alt="Welcome"
+                                    className="w-56 h-56 mx-auto object-contain relative z-10"
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{
+                                        y: 0,
+                                        opacity: 1,
+                                        rotate: [-2, 2, -2]
+                                    }}
+                                    transition={{
+                                        y: { duration: 0.5 },
+                                        opacity: { duration: 0.5 },
+                                        rotate: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                                    }}
+                                />
+
+                                {/* Falling Flowers Emitter (From the basket/hand area) */}
+                                <div className="absolute top-[40%] right-[10%] w-10 h-10 z-20 pointer-events-none">
+                                    {[...Array(20)].map((_, i) => (
+                                        <motion.div
+                                            key={i}
+                                            initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                                            animate={{
+                                                x: [0, 20 + Math.random() * 60],
+                                                y: [0, 100 + Math.random() * 100],
+                                                opacity: [1, 1, 0],
+                                                scale: [0.5, 1, 0.5],
+                                                rotate: [0, 180, 360]
+                                            }}
+                                            transition={{
+                                                duration: 2 + Math.random(),
+                                                repeat: Infinity,
+                                                delay: Math.random() * 2,
+                                                ease: "easeOut"
+                                            }}
+                                            className="absolute"
+                                        >
+                                            <Sparkles
+                                                size={8 + Math.random() * 8}
+                                                className={`text-morning-accent-${['rose', 'lavender', 'amber', 'teal'][Math.floor(Math.random() * 4)]}`}
+                                                fill="currentColor"
+                                            />
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <motion.h2
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4 }}
+                                className="text-3xl md:text-5xl font-bold text-gray-800 mb-4 tracking-tight"
+                            >
+                                Welcome Home, <span className="text-morning-accent-lavender">{user?.name?.split(' ')[0]}</span>
+                            </motion.h2>
 
                             <motion.div
-                                animate={{ rotate: [0, 10, -10, 0] }}
-                                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                                className="w-24 h-24 bg-morning-accent-lavender/10 rounded-full flex items-center justify-center mx-auto mb-8"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.6 }}
+                                className="relative py-4 px-8"
                             >
-                                <Sun size={48} className="text-morning-accent-lavender" />
+                                <Users size={24} className="absolute top-0 left-4 text-morning-accent-teal/20 rotate-12" />
+                                <BookOpen size={24} className="absolute bottom-0 right-4 text-morning-accent-rose/20 -rotate-12" />
+                                <p className="text-lg md:text-xl text-gray-500 font-medium italic leading-relaxed">
+                                    "{quote || t('home.quoteFallback')}"
+                                </p>
                             </motion.div>
 
-                            <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                                Welcome to your {new Date().toLocaleDateString('en-US', { weekday: 'long' })}, {user?.name?.split(' ')[0]}
-                            </h2>
-                            <p className="text-gray-500 text-lg leading-relaxed mb-10">
-                                "Let the light within you rise with the sun."
-                            </p>
-
-                            <button
+                            <motion.button
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.8 }}
                                 onClick={() => setShowWelcome(false)}
-                                className="px-10 py-4 bg-morning-accent-lavender text-white rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+                                className="mt-8 px-12 py-4 bg-gradient-to-r from-morning-accent-lavender to-morning-accent-teal text-white rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all text-lg tracking-wide"
                             >
-                                Begin My Journey
-                            </button>
+                                Enter Sanctuary
+                            </motion.button>
                         </motion.div>
                     </motion.div>
                 )}
@@ -184,13 +247,13 @@ const Home = () => {
                     className="relative z-10"
                 >
                     <span className="inline-block px-5 py-2 rounded-full bg-morning-accent-lavender/5 text-morning-accent-lavender text-[10px] font-black uppercase tracking-[0.3em] mb-6 border border-black/5">
-                        Serene Morning
+                        {t('home.sereneMorning')}
                     </span>
                     <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6 tracking-tighter">
-                        Namaste, <span className="text-morning-accent-lavender glow-text">{user?.name?.split(' ')[0] || 'Seeker'}</span>
+                        {t('home.namaste')}, <span className="text-morning-accent-lavender glow-text">{user?.name?.split(' ')[0] || 'Seeker'}</span>
                     </h1>
                     <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
-                        Welcome back to your serene sanctuary. The world is fresh here. Breathe, reflect, and find your center.
+                        {t('home.welcomeMessage')}
                     </p>
                 </motion.div>
 
@@ -207,7 +270,7 @@ const Home = () => {
                         <Sun size={140} className="text-morning-accent-lavender" />
                     </div>
 
-                    <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-12">Morning Breath</h2>
+                    <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-12">{t('home.morningBreath')}</h2>
 
                     <div className="relative flex items-center justify-center h-72">
                         <motion.div
@@ -231,7 +294,7 @@ const Home = () => {
                                         animate={{ opacity: [0, 1, 0] }}
                                         transition={{ duration: 10, repeat: Infinity, times: [0, 0.5, 1] }}
                                     >
-                                        Breathe In
+                                        {t('home.breatheIn')}
                                     </motion.span>
                                 </AnimatePresence>
                                 <motion.span
@@ -240,7 +303,7 @@ const Home = () => {
                                     animate={{ opacity: [0, 1, 0] }}
                                     transition={{ duration: 10, repeat: Infinity, delay: 5, times: [0, 0.5, 1] }}
                                 >
-                                    Breathe Out
+                                    {t('home.breatheOut')}
                                 </motion.span>
                             </motion.div>
                         </motion.div>
@@ -262,8 +325,8 @@ const Home = () => {
                                 <Wind size={20} />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold text-gray-800">Emotional Tides</h3>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-1">Registry of your internal landscape</p>
+                                <h3 className="text-xl font-bold text-gray-800">{t('home.emotionalTides')}</h3>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-1">{t('home.registry')}</p>
                             </div>
                         </div>
 
@@ -336,7 +399,7 @@ const Home = () => {
                     ) : (
                         <div className="glass-card p-8 bg-white/40 shadow-glass-light border-black/5 text-center">
                             <History size={32} className="mx-auto text-gray-300 mb-4" />
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">History is forming...</p>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('home.historyForming')}</p>
                         </div>
                     )}
 
@@ -349,7 +412,7 @@ const Home = () => {
                                 className="absolute top-[-20%] right-[-20%] w-72 h-72 bg-morning-accent-lavender rounded-full blur-[90px]"
                             />
                         </div>
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] mb-6 text-gray-400">Morning Breeze</h4>
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] mb-6 text-gray-400">{t('home.morningBreeze')}</h4>
                         <p className="text-xl font-bold leading-relaxed italic text-gray-700 glow-text min-h-[4rem]">
                             "{quote || "Even in the quietest morning, the sanctuary remains alive and fresh."}"
                         </p>
@@ -370,7 +433,7 @@ const Home = () => {
                         className="w-full glass-card p-6 flex items-center justify-center gap-4 text-status-danger font-black uppercase tracking-[0.3em] text-[10px] hover:bg-status-danger/10 border-morning-accent-rose/20 transition-all duration-1000 shadow-xl shadow-status-danger/5"
                     >
                         <ShieldAlert size={18} className="animate-pulse" />
-                        <span>Signal Crisis Expert</span>
+                        <span>{t('home.signalCrisis')}</span>
                     </motion.button>
                 </div>
             </div>

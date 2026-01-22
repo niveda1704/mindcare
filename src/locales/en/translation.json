@@ -1,0 +1,235 @@
+{
+    "roleSelection": {
+        "titlePrefix": "Select Your",
+        "titleHighlight": "Path",
+        "subTitle": "Choose your perspective",
+        "roles": {
+            "student": {
+                "title": "Seeker",
+                "description": "Find balance & inner peace"
+            },
+            "counselor": {
+                "title": "Guide",
+                "description": "Support & nurture growth"
+            },
+            "admin": {
+                "title": "Guardian",
+                "description": "Oversee the sanctuary"
+            }
+        },
+        "enterBtn": "Enter Now"
+    },
+    "nav": {
+        "Home": "Home",
+        "Guide": "Guide",
+        "Dashboard": "Dashboard",
+        "Seekers": "Seekers",
+        "Vitality": "Vitality",
+        "Booking": "Booking",
+        "Whispers": "Whispers",
+        "Admin": "Admin",
+        "SignalExit": "Signal Exit"
+    },
+    "common": {
+        "switchLanguage": "Language"
+    },
+    "home": {
+        "sereneMorning": "Serene Morning",
+        "namaste": "Namaste",
+        "welcomeMessage": "Welcome back to your serene sanctuary. The world is fresh here. Breathe, reflect, and find your center.",
+        "emotionalTides": "Emotional Tides",
+        "registry": "Registry of your internal landscape",
+        "morningBreath": "Morning Breath",
+        "breatheIn": "Breathe In",
+        "breatheOut": "Breathe Out",
+        "quoteFallback": "In the dawn, your breath is the bridge to your clarity.",
+        "historyForming": "History is forming...",
+        "morningBreeze": "Morning Breeze",
+        "signalCrisis": "Signal Crisis Expert",
+        "moods": {
+            "radiant": "Radiant",
+            "peaceful": "Peaceful",
+            "steady": "Steady",
+            "heavy": "Heavy",
+            "stormy": "Stormy"
+        },
+        "actions": {
+            "chat": {
+                "title": "Breeze of AI",
+                "desc": "Secure, anonymous thoughts"
+            },
+            "booking": {
+                "title": "Seek Guidance",
+                "desc": "Connect with a guide"
+            },
+            "forum": {
+                "title": "The Shared Hill",
+                "desc": "Anonymously connect"
+            },
+            "resources": {
+                "title": "Morning Wisdom",
+                "desc": "Guides for your journey"
+            },
+            "screening": {
+                "title": "Heart Registry",
+                "desc": "PHQ-9 & GAD-7 Tools"
+            }
+        }
+    },
+    "booking": {
+        "headerTag": "Serene Guidance",
+        "headerTitle": "Support for",
+        "headerTitleHighlight": "Your Mind",
+        "headerDesc": "Take a gentle step towards clarity. Book a confidential session with our verified guides.",
+        "steps": {
+            "1": {
+                "label": "Choose Guide",
+                "sub": "Select a serene guide"
+            },
+            "2": {
+                "label": "Select Time",
+                "sub": "Find a calm moment"
+            },
+            "3": {
+                "label": "Confirmation",
+                "sub": "Finalize your choice"
+            }
+        },
+        "privacyNote": "Your sessions are 100% private and protected by standard security protocols.",
+        "selectGuide": "Select a Serene Guide",
+        "noGuides": "All our guides are currently assisting others. Please check back soon.",
+        "findMoment": "Find Your Moment",
+        "selectDate": "Select Date",
+        "availableSlots": "Available Time Slots",
+        "confirmTitle": "Confirm Your Appointment",
+        "selectedGuide": "Selected Guide",
+        "scheduledDate": "Scheduled Date",
+        "sessionTime": "Session Time",
+        "back": "Back",
+        "next": "Review Choices",
+        "submit": "Finalize Booking",
+        "successTitle": "Your Clarity is Scheduled",
+        "successMsg": "Your session has been confirmed.",
+        "returnHome": "Return to Sanctuary"
+    },
+    "voice": {
+        "status": {
+            "idle": "I'm listening",
+            "listening": "Listening...",
+            "processing": "Thinking...",
+            "speaking": "Speaking..."
+        },
+        "tapPrompt": "Tap the microphone and share what's on your mind.",
+        "testAudioText": "Testing audio system. One, two, three.",
+        "testVoiceBtn": "Test Voice",
+        "forceSoundBtn": "Force System Sound",
+        "replayBtn": "Replay",
+        "stopBtn": "Stop",
+        "cancelBtn": "Cancel",
+        "tapToTalk": "Tap to Talk",
+        "connectionError": "I am having trouble connecting right now."
+    },
+    "chat": {
+        "welcomeMessage": "Welcome to the serene sanctuary. I'm your Guide. The air is fresh, and I'm here to listen to your morning thoughts. How are you feeling in this clarity?",
+        "reflectionLost": "Reflection lost. Try again.",
+        "voiceNotSupported": "Voice input is not supported in this sanctuary.",
+        "errorResponse": "The breeze is making it hard to hear. Let me take a breath and try again.",
+        "clearConfirm": "Clearing the mist will start a new session. Proceed?",
+        "clearedMessage": "The sanctuary is clear. I'm waiting for your next reflection.",
+        "headerTitle": "Sanctuary Guide",
+        "headerSubtitle": "Sanctuary Presence • Anonymous",
+        "suggestions": {
+            "fresh": "The morning feels fresh",
+            "clarity": "Seeking clarity for my mind",
+            "expectations": "Expectations from the day",
+            "guide": "Guide me through serenity"
+        },
+        "inputPlaceholder": "Whisper your heart here...",
+        "listeningPlaceholder": "The sanctuary is listening...",
+        "privacyNote": "Your reflections are private and sacred"
+    },
+    "screening": {
+        "headerTag": "Wellbeing Assessment",
+        "headerTitle": "Check-in with",
+        "headerTitleHighlight": "Yourself",
+        "headerDesc": "Our validated tools provide insight into your mental landscape. Select a focus to begin.",
+        "phq9": {
+            "name": "Morning Quality (PHQ-9)",
+            "shortName": "Clarity Screening",
+            "description": "A gentle 9-question journey to understand your emotional depth and clarity of thought.",
+            "questions": [
+                "Little interest or pleasure in doing things?",
+                "Feeling down, depressed, or hopeless?",
+                "Trouble falling or staying asleep, or sleeping too much?",
+                "Feeling tired or having little energy?",
+                "Poor appetite or overeating?",
+                "Feeling bad about yourself — or that you are a failure?",
+                "Trouble concentrating on things, like reading or studying?",
+                "Moving or speaking slowly, or being unusually restless?",
+                "Thoughts about being better off dead or hurting yourself?"
+            ]
+        },
+        "gad7": {
+            "name": "Serenity Scan (GAD-7)",
+            "shortName": "Peace Screening",
+            "description": "A 7-question tool to measure the waves of anxiety and find your inner serenity.",
+            "questions": [
+                "Feeling nervous, anxious or on edge?",
+                "Not being able to stop or control worrying?",
+                "Worrying too much about different things?",
+                "Trouble relaxing?",
+                "Being so restless that it is hard to sit still?",
+                "Becoming easily annoyed or irritable?",
+                "Feeling afraid as if something awful might happen?"
+            ]
+        },
+        "options": [
+            "Not at all",
+            "Several days",
+            "More than half the days",
+            "Nearly every day"
+        ],
+        "successMsg": "Assessment completed with care",
+        "errorMsg": "Failed to save assessment",
+        "results": {
+            "title": "Assessment Complete",
+            "subtitle": "Reflecting on your results",
+            "profile": "Current Profile",
+            "highRiskMsg": "Your results indicate a higher intensity of emotional waves. We recommend a gentle conversation with one of our guides to find your center.",
+            "lowRiskMsg": "Your responses suggest a balanced state of mind. Continue nurturing your radiant spirit!"
+        },
+        "returnToSelection": "Return to Selection",
+        "connectGuide": "Connect to a Guide",
+        "disclaimer": "This tool is for personal insight, not clinical diagnosis. Your wellness journey is unique.",
+        "beginScan": "Begin Scan",
+        "privacyTitle": "Sacred Trust & Privacy",
+        "privacyDesc": "Your responses are encrypted and only accessible by clinical partners if requested. We use this data solely to recommend the best support for your unique experience.",
+        "inProgress": "Assessment In Progress",
+        "question": "Question",
+        "complete": "Complete",
+        "previous": "Previous",
+        "finalize": "Finalize Assessment",
+        "reflectSelect": "Reflect & Select",
+        "trustIntuition": "Always trust your intuition. We are here to support your path."
+    },
+    "resources": {
+        "headerTag": "Morning Library",
+        "headerTitle": "Wisdom",
+        "headerTitleHighlight": "Sanctuary",
+        "headerDesc": "A peaceful grove of curated guides, sounds, and ancestral wisdom to nourish your spirit during the fresh hours.",
+        "categories": {
+            "all": "All",
+            "anxiety": "Anxiety",
+            "stress": "Stress",
+            "sleep": "Sleep",
+            "academic": "Academic",
+            "social": "Social",
+            "meditation": "Meditation"
+        },
+        "searchPlaceholder": "Seek inner peace...",
+        "loading": "Illuminating the scrolls...",
+        "noResults": "The breeze blows through an empty space. Try another path.",
+        "illuminateBtn": "Illuminate",
+        "footer": "Breezes of knowledge added with every new dawn"
+    }
+}

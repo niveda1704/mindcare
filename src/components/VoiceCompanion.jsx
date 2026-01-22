@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, X, Volume2, Loader2, Sparkles, AlertCircle } from 'lucide-react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const VoiceCompanion = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,8 @@ const VoiceCompanion = () => {
     // IMPORTANT: Store utterance in ref to prevent garbage collection mid-speech (Chrome bug)
     const utteranceRef = useRef(null);
     const { user } = useAuth();
+    const { t } = useTranslation();
+
 
     const isSpeechSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
     const isTTSSupported = 'speechSynthesis' in window;
@@ -109,11 +112,11 @@ const VoiceCompanion = () => {
             const { message: aiText } = response.data;
             setAiResponseText(aiText);
             // Ensure state updates before speaking
-            setTimeout(() => speakResponse(aiText), 100);
+            speakResponse(aiText);
         } catch (error) {
             console.error("AI Error", error);
             setStatus('idle');
-            const errorMsg = "I am having trouble connecting right now.";
+            const errorMsg = t('voice.connectionError');
             setAiResponseText(errorMsg);
             speakResponse(errorMsg);
         }
@@ -254,10 +257,10 @@ const VoiceCompanion = () => {
                                 {/* Text Area */}
                                 <div className="text-center space-y-2 max-w-xs">
                                     <h3 className="text-xl font-medium text-white tracking-wide">
-                                        {status === 'idle' && "I'm listening"}
-                                        {status === 'listening' && "Listening..."}
-                                        {status === 'processing' && "Thinking..."}
-                                        {status === 'speaking' && "Speaking..."}
+                                        {status === 'idle' && t('voice.status.idle')}
+                                        {status === 'listening' && t('voice.status.listening')}
+                                        {status === 'processing' && t('voice.status.processing')}
+                                        {status === 'speaking' && t('voice.status.speaking')}
                                     </h3>
 
                                     <div className="h-24 flex items-center justify-center overflow-y-auto no-scrollbar">
@@ -269,13 +272,13 @@ const VoiceCompanion = () => {
                                         )}
                                         {status === 'idle' && !aiResponseText && (
                                             <div className="flex flex-col items-center gap-2">
-                                                <p className="text-white/40 text-sm">Tap the microphone and share what's on your mind.</p>
+                                                <p className="text-white/40 text-sm">{t('voice.tapPrompt')}</p>
                                                 <div className="flex gap-2">
                                                     <button
-                                                        onClick={() => speakResponse("Testing audio system. One, two, three.")}
+                                                        onClick={() => speakResponse(t('voice.testAudioText'))}
                                                         className="text-[10px] bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-white/50 transition-colors"
                                                     >
-                                                        Test Voice
+                                                        {t('voice.testVoiceBtn')}
                                                     </button>
                                                     <button
                                                         onClick={() => {
@@ -287,7 +290,7 @@ const VoiceCompanion = () => {
                                                         }}
                                                         className="text-[10px] bg-indigo-500/20 hover:bg-indigo-500/40 px-3 py-1 rounded-full text-indigo-300 transition-colors"
                                                     >
-                                                        Force System Sound
+                                                        {t('voice.forceSoundBtn')}
                                                     </button>
                                                 </div>
                                             </div>
@@ -296,7 +299,7 @@ const VoiceCompanion = () => {
                                             <div className="flex flex-col items-center gap-2">
                                                 <p className="text-white/60 text-xs line-clamp-2">"{aiResponseText}"</p>
                                                 <button onClick={retrySpeech} className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
-                                                    <Volume2 size={12} /> Replay
+                                                    <Volume2 size={12} /> {t('voice.replayBtn')}
                                                 </button>
                                             </div>
                                         )}
@@ -310,14 +313,14 @@ const VoiceCompanion = () => {
                                         className="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors shadow-lg shadow-indigo-500/25 flex items-center gap-2"
                                     >
                                         <Mic size={18} />
-                                        <span>Tap to Talk</span>
+                                        <span>{t('voice.tapToTalk')}</span>
                                     </button>
                                 ) : (
                                     <button
                                         onClick={status === 'listening' ? stopListening : cancelEverything}
                                         className="px-8 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium transition-colors border border-white/10"
                                     >
-                                        {status === 'listening' ? 'Stop' : 'Cancel'}
+                                        {status === 'listening' ? t('voice.stopBtn') : t('voice.cancelBtn')}
                                     </button>
                                 )}
 
