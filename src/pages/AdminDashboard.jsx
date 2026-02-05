@@ -73,6 +73,7 @@ const AdminDashboard = () => {
                 {/* Analysis Section */}
                 <div className="grid lg:grid-cols-12 gap-10">
                     {/* Trends Chart */}
+                    {/* Trends Chart */}
                     <div className="lg:col-span-7 glass-card p-10 bg-white/40 border-black/5 shadow-glass-light">
                         <div className="flex items-center justify-between mb-10">
                             <h3 className="text-xl font-bold text-gray-800 tracking-tight">Vibe Spectrum Trends</h3>

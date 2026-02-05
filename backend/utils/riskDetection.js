@@ -2,7 +2,10 @@ const analyzeRisk = (message) => {
     const categories = {
         high: [
             'suicide', 'kill myself', 'end my life', 'want to die',
-            'hang myself', 'cut myself', 'overdose', 'end it all', 'better off dead'
+            'hang myself', 'cut myself', 'overdose', 'end it all', 'better off dead',
+            'don\'t want to live', 'no reason to live', 'everyone would be better without me',
+            'wish i was dead', 'wish i hadn\'t been born', 'want to sleep forever',
+            'make it stop', 'can\'t go on', 'goodbye forever'
         ],
         medium: [
             'depressed', 'anxious', 'hopeless', 'lonely', 'sad',

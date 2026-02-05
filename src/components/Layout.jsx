@@ -47,7 +47,7 @@ const Layout = () => {
         { name: t('nav.Guide'), path: '/chat', icon: MessageCircle, roles: ['student'] },
         { name: t('nav.Dashboard'), path: '/counselor', icon: Users, roles: ['counselor'] },
         { name: t('nav.Seekers'), path: '/students', icon: Users, roles: ['admin', 'counselor'] },
-        { name: t('nav.Vitality'), path: '/screening', icon: ClipboardCheck, roles: ['student'] },
+
         { name: t('nav.Booking'), path: '/booking', icon: Calendar, roles: ['student'] },
         { name: t('nav.Whispers'), path: '/resources', icon: BookOpen, roles: ['student', 'admin'] },
 

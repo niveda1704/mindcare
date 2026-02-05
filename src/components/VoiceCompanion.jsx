@@ -106,13 +106,25 @@ const VoiceCompanion = () => {
         }
     };
 
+    const [recommendations, setRecommendations] = useState([]);
+
     const handleSend = async (text) => {
         try {
             const response = await api.post('/chat/analyze', { message: text });
-            const { message: aiText } = response.data;
+            // Extract message and recommendations from the new API structure
+            const { message: aiText, recommendations: recs } = response.data;
+
             setAiResponseText(aiText);
+
+            let textToSpeak = aiText;
+            if (recs && recs.length > 0) {
+                setRecommendations(recs);
+                // Append announcement for recommendations
+                textToSpeak += " Here are some recommended videos for you. Kindly look at this to calm your mind.";
+            }
+
             // Ensure state updates before speaking
-            speakResponse(aiText);
+            speakResponse(textToSpeak);
         } catch (error) {
             console.error("AI Error", error);
             setStatus('idle');
@@ -166,6 +178,7 @@ const VoiceCompanion = () => {
         if (status === 'listening' && recognitionRef.current) recognitionRef.current.stop();
         setIsOpen(false);
         setStatus('idle');
+        setRecommendations([]);
     };
 
     const retrySpeech = () => {
@@ -325,6 +338,40 @@ const VoiceCompanion = () => {
                                 )}
 
                             </div>
+
+                            {/* Recommendations Section */}
+                            {recommendations.length > 0 && status === 'idle' && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="px-6 pb-6 w-full"
+                                >
+                                    <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 text-center">
+                                        {t('voice.recommendedForYou') || "RECOMMENDED FOR YOU"}
+                                    </p>
+                                    <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar snap-x">
+                                        {recommendations.map((rec, idx) => (
+                                            <a
+                                                key={idx}
+                                                href={rec.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="flex-shrink-0 w-48 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-3 transition-all snap-center group cursor-pointer block"
+                                            >
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <div className={`w-2 h-2 rounded-full ${rec.category === 'Anxiety' ? 'bg-teal-400' : 'bg-purple-400'}`} />
+                                                    <span className="text-[9px] text-white/50 uppercase tracking-wider truncate">{rec.category}</span>
+                                                </div>
+                                                <p className="text-sm font-medium text-white/90 line-clamp-2 group-hover:text-indigo-300 transition-colors">
+                                                    {rec.title}
+                                                </p>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            )}
+
                         </motion.div>
                     </motion.div>
                 )}

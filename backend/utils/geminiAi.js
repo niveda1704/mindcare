@@ -100,4 +100,55 @@ const generateOfflineResponse = (msg) => {
     return followUps[Math.floor(Math.random() * followUps.length)];
 };
 
-module.exports = { getAiResponse };
+const getWellnessResponse = async (userMessage) => {
+    try {
+        const apiKey = process.env.GEMINI_API_KEY;
+
+        if (apiKey && apiKey.length > 20 && !apiKey.includes('YOUR_KEY')) {
+            const systemInstruction = `You are a supportive mental health companion.
+                Analyze the user's message and provide:
+                1. A compassionate, conversational response (approx 2 sentences).
+                2. A category for resource recommendation from this list: ['Anxiety', 'Stress', 'Sleep', 'Academic', 'Social', 'Meditation']. If unclear, use 'General'.
+                
+                Respond ONLY in strict JSON format:
+                {
+                    "response": "Your response text here...",
+                    "category": "The category here"
+                }
+             `;
+
+            const model = genAI.getGenerativeModel({
+                model: "gemini-1.5-flash",
+                systemInstruction: systemInstruction,
+                generationConfig: { responseMimeType: "application/json" }
+            });
+
+            const result = await model.generateContent(userMessage);
+            const response = await result.response;
+            const text = response.text();
+            try {
+                return JSON.parse(text);
+            } catch (jsonError) {
+                console.warn("JSON Parse failed, falling back to text", text);
+                return { response: text, category: "General" };
+            }
+        }
+
+        throw new Error("Offline or No Key");
+
+    } catch (error) {
+        // Fallback
+        const text = generateOfflineResponse(userMessage);
+        let category = 'General';
+        const lower = userMessage.toLowerCase();
+        if (lower.includes('sleep') || lower.includes('tired')) category = 'Sleep';
+        else if (lower.includes('exam') || lower.includes('study') || lower.includes('fail')) category = 'Academic';
+        else if (lower.includes('anx') || lower.includes('worry') || lower.includes('nervous')) category = 'Anxiety';
+        else if (lower.includes('sad') || lower.includes('depress') || lower.includes('cry')) category = 'Anxiety';
+        else if (lower.includes('stress') || lower.includes('overwhelm')) category = 'Stress';
+
+        return { response: text, category };
+    }
+};
+
+module.exports = { getAiResponse, getWellnessResponse };
